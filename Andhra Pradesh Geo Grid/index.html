@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andhra Pradesh 1 km Grid Map - Ecological Analysis</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #map {
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+        
+        /* Leaflet popup styling */
+        .leaflet-popup-content-wrapper {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 900px;
+        }
+        
+        .leaflet-popup-tip {
+            background-color: #ffffff;
+        }
+        
+        .popup-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .popup-section {
+            margin-bottom: 15px;
+        }
+        
+        .popup-section-title {
+            font-weight: 600;
+            color: #34495e;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            margin-top: 10px;
+        }
+        
+        .popup-coordinates {
+            background-color: #ecf0f1;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+        
+        .popup-property {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .popup-property:last-child {
+            border-bottom: none;
+        }
+        
+        .popup-property-key {
+            font-weight: 600;
+            color: #2980b9;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .popup-property-value {
+            color: #34495e;
+            text-align: right;
+            word-break: break-word;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 250px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .chart-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        /* Loading indicator */
+        .loading-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+            display: none;
+        }
+        
+        .loading-indicator.active {
+            display: block;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #ecf0f1;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            padding: 10px;
+            background-color: #fadbd8;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="loading-indicator active">
+        <div class="loading-spinner"></div>
+        <p>Loading grid data and ecological parameters...</p>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <script>
+        // Global variables
+        let map;
+        let geoJsonLayer;
+        let ecologyData = {};
+        let chartInstances = [];
+        
+        // Initialize the map
+        function initMap() {
+            map = L.map('map').setView([16.5, 80.6], 7);
+            
+            // Add OpenStreetMap base layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19,
+                minZoom: 5
+            }).addTo(map);
+        }
+        
+        // Function to style the grid cells
+        function styleGrid(feature) {
+            return {
+                fillColor: '#3498db',
+                color: '#2980b9',
+                weight: 2,
+                opacity: 0.8,
+                fillOpacity: 0.1
+            };
+        }
+        
+        // Function to destroy existing charts
+        function destroyCharts() {
+            chartInstances.forEach(chart => {
+                if (chart) {
+                    chart.destroy();
+                }
+            });
+            chartInstances = [];
+        }
+        
+        // Function to create a line chart for a parameter
+        function createParameterChart(canvasId, paramName, city, gridId, data) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return null;
+            
+            const years = ['2000', '2015', '2020', '2024'];
+            const summerData = [];
+            const winterData = [];
+            
+            for (const year of years) {
+                if (data[paramName] && data[paramName][year]) {
+                    summerData.push(data[paramName][year]['summer'] || null);
+                    winterData.push(data[paramName][year]['winter'] || null);
+                } else {
+                    summerData.push(null);
+                    winterData.push(null);
+                }
+            }
+            
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Summer',
+                            data: summerData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#e74c3c'
+                        },
+                        {
+                            label: 'Winter',
+                            data: winterData,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3498db'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: { size: 11 },
+                                padding: 10
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: { font: { size: 10 } },
+                            grid: { drawBorder: false }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } },
+                            grid: { drawBorder: false }
+                        }
+                    }
+                }
+            });
+            
+            return chart;
+        }
+        
+        // Function to handle each feature
+        function onEachFeature(feature, layer) {
+            layer.on('click', function(e) {
+                // Get the click coordinates
+                const latlng = e.latlng;
+                const lat = latlng.lat.toFixed(5);
+                const lng = latlng.lng.toFixed(5);
+                
+                const city = feature.properties.City;
+                const gridId = feature.properties.Grid_ID;
+                
+                // Get data for this grid cell
+                const gridData = ecologyData[city] && ecologyData[city][gridId];
+                
+                // Build the popup content
+                let popupContent = '<div class="popup-title">Grid Cell: ' + city + ' - Grid #' + gridId + '</div>';
+                
+                // Add coordinates section
+                popupContent += '<div class="popup-section">';
+                popupContent += '<div class="popup-section-title">Click Coordinates</div>';
+                popupContent += '<div class="popup-coordinates">';
+                popupContent += `Latitude: ${lat}<br>`;
+                popupContent += `Longitude: ${lng}`;
+                popupContent += '</div>';
+                popupContent += '</div>';
+                
+                // Add properties section
+                if (feature.properties && Object.keys(feature.properties).length > 0) {
+                    popupContent += '<div class="popup-section">';
+                    popupContent += '<div class="popup-section-title">Grid Properties</div>';
+                    
+                    for (const [key, value] of Object.entries(feature.properties)) {
+                        popupContent += '<div class="popup-property">';
+                        popupContent += `<span class="popup-property-key">${key}:</span>`;
+                        popupContent += `<span class="popup-property-value">${value}</span>`;
+                        popupContent += '</div>';
+                    }
+                    
+                    popupContent += '</div>';
+                }
+                
+                // Add charts section if data exists
+                if (gridData) {
+                    popupContent += '<div class="popup-section">';
+                    popupContent += '<div class="popup-section-title">Ecological Parameters (2000-2024)</div>';
+                    popupContent += '<div class="charts-grid">';
+                    
+                    const params = ['Greenness', 'Urban_Density', 'UHI', 'LSTVI', 'PM25'];
+                    params.forEach((param, idx) => {
+                        const canvasId = `chart-${city}-${gridId}-${param}`;
+                        popupContent += `<div class="chart-wrapper">`;
+                        popupContent += `<div class="chart-title">${param}</div>`;
+                        popupContent += `<canvas id="${canvasId}"></canvas>`;
+                        popupContent += `</div>`;
+                    });
+                    
+                    popupContent += '</div>';
+                    popupContent += '</div>';
+                } else {
+                    popupContent += '<div class="error-message">No ecological data available for this grid cell.</div>';
+                }
+                
+                // Bind and open the popup
+                layer.bindPopup(popupContent, {
+                    maxWidth: 920,
+                    className: 'grid-popup'
+                }).openPopup();
+                
+                // Render charts after popup is opened
+                setTimeout(() => {
+                    destroyCharts();
+                    const params = ['Greenness', 'Urban_Density', 'UHI', 'LSTVI', 'PM25'];
+                    params.forEach((param) => {
+                        const canvasId = `chart-${city}-${gridId}-${param}`;
+                        if (gridData) {
+                            const chart = createParameterChart(canvasId, param, city, gridId, gridData);
+                            if (chart) chartInstances.push(chart);
+                        }
+                    });
+                }, 100);
+            });
+        }
+        
+        // Load data and initialize map
+        async function loadData() {
+            try {
+                // Initialize map first
+                initMap();
+                
+                // Load ecology data
+                const ecologyResponse = await fetch('ecology_data.json');
+                if (!ecologyResponse.ok) {
+                    throw new Error(`Failed to load ecology data: ${ecologyResponse.status}`);
+                }
+                ecologyData = await ecologyResponse.json();
+                console.log('Ecology data loaded successfully');
+                
+                // Load GeoJSON
+                const geoJsonResponse = await fetch('grid_data.geojson');
+                if (!geoJsonResponse.ok) {
+                    throw new Error(`Failed to load GeoJSON: ${geoJsonResponse.status}`);
+                }
+                const geoJsonData = await geoJsonResponse.json();
+                
+                // Add GeoJSON layer to map
+                geoJsonLayer = L.geoJSON(geoJsonData, {
+                    style: styleGrid,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+                
+                // Hide loading indicator
+                document.querySelector('.loading-indicator').classList.remove('active');
+                
+                // Fit map bounds to GeoJSON data
+                if (geoJsonLayer.getBounds().isValid()) {
+                    map.fitBounds(geoJsonLayer.getBounds(), { padding: [50, 50] });
+                }
+                
+                console.log('All data loaded successfully');
+                console.log(`Total features: ${geoJsonData.features.length}`);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.querySelector('.loading-indicator').innerHTML = 
+                    '<p style="color: #e74c3c;">Error loading data. Please ensure both grid_data.geojson and ecology_data.json are in the same folder.</p>';
+            }
+        }
+        
+        // Start loading when page is ready
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
