@@ -365,7 +365,7 @@
             loader.classList.remove('hidden');
 
             try {
-                const response = await fetch('https://eco-backend-api.onrender.com/predict', {
+                const response = await fetch('https://nbs-for-dss-prediction-model.onrender.com/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
