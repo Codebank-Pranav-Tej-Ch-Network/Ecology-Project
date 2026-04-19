@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ── Rama's original variables ── */
         :root {
             --details-rail-width: 360px;
             --details-rail-gap: 12px;
@@ -72,7 +71,6 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* ── Rama's map styles ── */
         #map {
             width: 100vw;
             height: 100vh;
@@ -183,7 +181,6 @@
             background-color: var(--bg-main);
         }
 
-        /* ── Rama's grid selector ── */
         #grid-selector {
             position: absolute;
             top: 24px;
@@ -247,7 +244,6 @@
             cursor: not-allowed;
         }
 
-        /* ── Rama's details panel ── */
         #details-panel {
             position: fixed;
             top: 0;
@@ -760,10 +756,6 @@
             }
         }
 
-        /* ══════════════════════════════════════════════
-           YOUR ADDITION — Urban Health Input Panel
-           (only shows for outside-grid clicks)
-        ══════════════════════════════════════════════ */
         #urban-input-panel {
             position: absolute;
             top: 100px;
@@ -1087,8 +1079,7 @@
 </head>
 
 <body>
-
-    <!-- ── Rama's Grid Selector ── -->
+    
     <div id="grid-selector">
         <div class="dropdown-group">
             <span class="dropdown-label">City</span>
@@ -1104,7 +1095,6 @@
         </div>
     </div>
 
-    <!-- ── Rama's Top Bar ── -->
     <div id="top-bar">
         <a href="./index.html" class="icon-button" title="Back to Home" style="text-decoration: none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1113,14 +1103,9 @@
             </svg>
         </a>
         <div class="app-title">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                <line x1="8" y1="2" x2="8" y2="18"></line>
-                <line x1="16" y1="6" x2="16" y2="22"></line>
-            </svg>
-            AP EcoGrid Analysis
-        </div>
+    <img src="logo.png" alt="EcoKnowledge Logo" style="width: 24px; height: 24px; border-radius: 4px;">
+    AP EcoGrid Analysis
+</div>
         <button id="theme-toggle" class="icon-button" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
             <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
