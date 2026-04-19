@@ -1,7 +1,7 @@
 fastapi
 uvicorn[standard]
-tensorflow-cpu>=2.16.1
-numpy
+tensorflow==2.16.1
+numpy<2.0.0
 pandas
 scikit-learn
 python-multipart
