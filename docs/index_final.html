@@ -1,3 +1,24 @@
+None selected
+
+Skip to content
+Using Indian Institute of Technology Tirupati Mail with screen readers
+
+1 of 5,621
+(no subject)
+Inbox
+ME24B006 BHEEMATHATI ANANYA <me24b006@iittp.ac.in>
+Attachments
+3:41 PM (19 minutes ago)
+to me
+
+Be careful with this message.
+This message has one or more attachments that Gmail can't verify and that might be harmful. Don't download the attachments unless you trust the sender and the message.
+
+Report spamLooks safe
+
+ One attachment
+  •  Scanned by Gmail
+Downloading this attachment is disabled. If you want to download it and you trust this message, click "Looks safe" in the banner above.
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,20 +26,500 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andhra Pradesh 1 km Grid Map - Ecological Analysis</title>
-<link rel="icon" type="image/x-icon" href="./favicon.ico?v=2">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-    <link rel="stylesheet" href="style1.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    </head>
+    <style>
+        /* ── Rama's original variables ── */
+        :root {
+            --bg-main: #f8fafc;
+            --bg-panel: rgba(248, 250, 252, 0.95);
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --button-bg: #0f172a;
+            --button-hover: #334155;
+            --button-text: #ffffff;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --chart-grid: #f1f5f9;
+            --map-border: #ffffff;
+        }
+
+        body.dark-theme {
+            --bg-main: #0f172a;
+            --bg-panel: rgba(15, 23, 42, 0.95);
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #60a5fa;
+            --accent-hover: #93c5fd;
+            --button-bg: #3b82f6;
+            --button-hover: #2563eb;
+            --button-text: #ffffff;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.5);
+            --chart-grid: #334155;
+            --map-border: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%; width: 100%; overflow: hidden;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ── Colormap Control ── */
+        #colormap-control {
+            position: fixed; top: 24px; right: 24px;
+            background: var(--bg-card); padding: 10px 18px;
+            border-radius: 50px; box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            z-index: 1000; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+            max-width: min(520px, calc(100vw - 48px));
+            transition: all 0.3s ease;
+        }
+        #colormap-control.hidden { opacity: 0; pointer-events: none; transform: translateY(-20px); }
+        #colormap-legend {
+            position: fixed; bottom: 40px; right: 24px;
+            background: var(--bg-card); padding: 14px 18px;
+            border-radius: 14px; box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            z-index: 1000; min-width: 180px; transition: all 0.3s ease;
+        }
+        #colormap-legend.hidden { opacity: 0; pointer-events: none; }
+        .legend-title {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.6px; color: var(--text-secondary); margin-bottom: 8px;
+        }
+        .legend-gradient {
+            height: 12px; border-radius: 6px;
+            background: linear-gradient(to right, #d73027, #fee08b, #1a9850);
+            margin-bottom: 5px;
+        }
+        .legend-labels {
+            display: flex; justify-content: space-between;
+            font-size: 11px; color: var(--text-secondary); font-weight: 600;
+        }
+
+        /* ── Map + weather rail ── */
+        #map-weather-rail {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+        }
+        #map-weather-rail > #map {
+            pointer-events: auto;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            transition: width 0.45s ease, height 0.45s ease, box-shadow 0.45s ease, border-radius 0.45s ease;
+        }
+        #map.minimized {
+            position: fixed;
+            top: auto; left: auto; bottom: 30px; right: 30px;
+            width: 360px; height: 360px; z-index: 1000;
+            border: 4px solid var(--map-border);
+            border-radius: 16px; box-shadow: var(--shadow-lg);
+        }
+        body.details-open #map-weather-rail {
+            inset: auto;
+            top: 88px;
+            left: 32px;
+            width: 360px;
+            height: auto;
+            bottom: auto;
+            right: auto;
+            z-index: 1100;
+            gap: 12px;
+            pointer-events: auto;
+        }
+        body.details-open #map-weather-rail > #map {
+            flex: 0 0 360px;
+            width: 360px;
+            height: 360px;
+            border: 4px solid var(--map-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        body.details-open #map-weather-rail > #map.minimized {
+            position: relative;
+            top: auto; left: auto; bottom: auto; right: auto;
+        }
+        body.dark-theme .leaflet-layer,
+        body.dark-theme .leaflet-control-zoom-in,
+        body.dark-theme .leaflet-control-zoom-out,
+        body.dark-theme .leaflet-control-attribution {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        /* ── Rama's top bar ── */
+        #top-bar {
+            position: fixed; top: 24px; left: 50%;
+            transform: none;
+            background: var(--bg-card);
+            padding: 12px 24px; border-radius: 50px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 24px;
+            z-index: 1000; transition: all 0.3s ease;
+        }
+        #top-bar.hidden {
+            opacity: 0; pointer-events: none;
+            transform: translate(-50%, -20px);
+        }
+        .app-title {
+            font-weight: 700; font-size: 16px;
+            color: var(--text-primary); letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .hint-pill {
+            font-size: 12px; color: var(--text-secondary);
+            background: var(--bg-main); padding: 6px 14px;
+            border-radius: 20px; border: 1px solid var(--border-color);
+        }
+        .icon-button {
+            background: transparent; border: none;
+            color: var(--text-secondary); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            padding: 8px; border-radius: 50%;
+            transition: color 0.2s, background-color 0.2s;
+        }
+        .icon-button:hover { color: var(--accent-color); background-color: var(--bg-main); }
+
+        /* ── Rama's grid selector ── */
+        #grid-selector {
+            position: fixed; top: 24px; left: 24px;
+            background: var(--bg-card); padding: 12px 20px;
+            border-radius: 50px; box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            z-index: 1000; display: flex; gap: 16px; align-items: center;
+            transition: all 0.3s ease;
+        }
+        #grid-selector.hidden { opacity: 0; pointer-events: none; transform: translateY(-20px); }
+        .dropdown-group { display: flex; align-items: center; gap: 8px; }
+        .dropdown-label {
+            font-size: 11px; color: var(--text-secondary);
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .styled-select {
+            appearance: none; background-color: var(--bg-main);
+            color: var(--text-primary); border: 1px solid var(--border-color);
+            padding: 8px 32px 8px 12px; border-radius: 20px;
+            font-family: inherit; font-size: 13px; font-weight: 500;
+            outline: none; cursor: pointer; transition: border-color 0.2s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 10px center;
+        }
+        .styled-select:focus { border-color: var(--accent-color); }
+        .styled-select:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ── Rama's details panel ── */
+        #details-panel {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: var(--bg-panel);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 50; overflow-y: auto; display: none;
+            padding: 40px;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        #details-panel.active { display: block; opacity: 1; }
+        body.details-open #details-panel.active {
+            padding: 40px 40px 40px 432px;
+        }
+        .details-content { max-width: 1400px; margin: 0 auto; }
+        .details-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; background: var(--bg-card);
+            padding: 24px 32px; border-radius: 16px;
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .details-title h1 {
+            font-size: 28px; color: var(--text-primary);
+            margin-bottom: 6px; font-weight: 700; letter-spacing: -0.5px;
+        }
+        .details-title p { color: var(--text-secondary); font-size: 15px; }
+        .back-button {
+            background-color: var(--button-bg); color: var(--button-text);
+            border: none; padding: 14px 28px; border-radius: 10px;
+            cursor: pointer; font-size: 15px; font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        .back-button:hover { background-color: var(--button-hover); transform: translateY(-1px); }
+        .details-dropdowns {
+            display: flex; gap: 16px; align-items: center;
+            margin: 0 20px 0 auto;
+        }
+        .properties-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px; background: var(--bg-card); padding: 32px;
+            border-radius: 16px; box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color); margin-bottom: 40px;
+            transition: all 0.3s ease;
+        }
+        .property-card { display: flex; flex-direction: column; border-left: 4px solid var(--accent-color); padding-left: 16px; }
+        .property-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; font-weight: 600; }
+        .property-value { font-size: 20px; font-weight: 700; color: var(--text-primary); word-break: break-word; }
+        .charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 60px; }
+        .chart-card {
+            background: var(--bg-card); border-radius: 16px; padding: 32px;
+            box-shadow: var(--shadow-md); border: 1px solid var(--border-color);
+            height: 460px; display: flex; flex-direction: column; transition: all 0.3s ease;
+        }
+        .chart-card.full-width { grid-column: 1 / -1; height: 520px; }
+        .chart-header { margin-bottom: 24px; text-align: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+        .chart-header h3 { font-size: 18px; color: var(--text-primary); font-weight: 700; }
+        .chart-canvas-wrapper { flex: 1; position: relative; width: 100%; }
+        .no-data {
+            grid-column: 1 / -1; background: rgba(239,68,68,0.1);
+            color: #ef4444; padding: 32px; border-radius: 16px;
+            text-align: center; font-weight: 600; font-size: 18px;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        /* ── Loading indicator (Rama's) ── */
+        .loading-indicator {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-main); color: var(--text-primary);
+            z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; visibility: hidden;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+        }
+        .loading-indicator.active { opacity: 1; pointer-events: all; visibility: visible; }
+        .map-loader-container {
+            position: relative; width: 120px; height: 120px;
+            margin-bottom: 30px; display: flex; align-items: center; justify-content: center;
+        }
+        .map-icon {
+            width: 100%; height: 100%;
+            stroke-dasharray: 200; stroke-dashoffset: 200;
+            animation: drawMap 2.5s cubic-bezier(0.4,0,0.2,1) infinite alternate;
+        }
+        .pin-icon {
+            position: absolute; top: 20%; left: 50%;
+            transform: translateX(-50%) translateY(-40px); opacity: 0;
+            animation: dropPin 2.5s cubic-bezier(0.34,1.56,0.64,1) infinite;
+            animation-delay: 1.2s;
+        }
+        .loading-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.5px; animation: pulseText 2s infinite ease-in-out; }
+        .loading-text { color: var(--text-secondary); font-size: 16px; }
+        @keyframes drawMap { 0% { stroke-dashoffset: 200; fill: transparent; transform: scale(0.95); opacity: 0.3; } 45% { stroke-dashoffset: 0; fill: transparent; transform: scale(1); opacity: 1; } 100% { stroke-dashoffset: 0; fill: rgba(59,130,246,0.15); transform: scale(1.05); opacity: 1; } }
+        @keyframes dropPin { 0%, 20% { transform: translateX(-50%) translateY(-40px); opacity: 0; } 40%, 60% { transform: translateX(-50%) translateY(0); opacity: 1; } 80%, 100% { transform: translateX(-50%) translateY(0); opacity: 0; } }
+        @keyframes pulseText { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+
+        /* ══════════════════════════════════════════════
+           YOUR ADDITION — Urban Health Input Panel
+           (only shows for outside-grid clicks)
+        ══════════════════════════════════════════════ */
+        #urban-input-panel {
+            position: fixed; top: 0; right: 0; width: 400px; height: 100vh;
+            background: var(--bg-card); border-left: 1px solid var(--border-color);
+            z-index: 500; display: none; flex-direction: column;
+            box-shadow: var(--shadow-lg); transition: all 0.3s ease;
+        }
+        #urban-input-panel.open { display: flex; }
+        .uip-header { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-color); }
+        .uip-header h2 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .uip-header p { font-size: 13px; color: var(--text-secondary); }
+        .uip-close {
+            background: transparent; border: none; color: var(--text-secondary);
+            cursor: pointer; padding: 6px; border-radius: 6px; float: right; margin-top: -4px;
+        }
+        .uip-close:hover { color: var(--text-primary); }
+        .uip-coord {
+            display: inline-block; background: var(--bg-main);
+            border: 1px solid var(--border-color); border-radius: 6px;
+            padding: 4px 10px; font-size: 11px; font-family: monospace;
+            color: var(--text-secondary); margin-top: 10px;
+        }
+        .uip-body { padding: 20px 24px; flex: 1; overflow-y: auto; }
+        .uip-field { margin-bottom: 15px; }
+        .uip-field label {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px;
+        }
+        .uip-field label em { font-style: normal; font-weight: 400; text-transform: none; }
+        .uip-field input {
+            width: 100%; padding: 10px 14px; border-radius: 10px;
+            border: 1.5px solid var(--border-color); background: var(--bg-main);
+            color: var(--text-primary); font-size: 14px;
+            font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s;
+        }
+        .uip-field input:focus { border-color: var(--accent-color); }
+        .uip-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border-color); }
+        .uip-btn {
+            width: 100%; padding: 13px; border-radius: 10px;
+            background: var(--button-bg); color: var(--button-text);
+            border: none; font-size: 15px; font-weight: 700;
+            font-family: 'Inter', sans-serif; cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .uip-btn:hover { background: var(--button-hover); transform: translateY(-1px); }
+        .uip-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .uip-err { font-size: 12px; color: #ef4444; margin-top: 8px; display: none; }
+        .uip-loading { font-size: 12px; color: var(--text-secondary); margin-top: 8px; display: none; }
+
+        /* ── Urban Health Score Results Panel ── */
+        #urban-results-panel {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-panel);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 50; overflow-y: auto; display: none;
+            padding: 40px; padding-right: 420px;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        #urban-results-panel.active { display: block; opacity: 1; }
+        .score-hero {
+            background: var(--bg-card); border-radius: 16px; padding: 32px;
+            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+            margin-bottom: 28px; display: flex; align-items: center; gap: 40px;
+        }
+        .score-num { font-size: 72px; font-weight: 900; line-height: 1; transition: color 0.4s; flex-shrink: 0; }
+        .score-info { flex: 1; }
+        .score-cat { font-size: 32px; font-weight: 700; margin-bottom: 6px; transition: color 0.4s; }
+        .score-desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 20px; }
+        .meter-outer { height: 12px; background: var(--border-color); border-radius: 99px; overflow: hidden; }
+        .meter-inner { height: 100%; border-radius: 99px; width: 0%; transition: width 1.2s cubic-bezier(0.4,0,0.2,1), background 0.4s; }
+        .meter-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+        .meter-labels span { font-size: 11px; color: var(--text-secondary); }
+        .urban-params-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px; background: var(--bg-card); padding: 28px;
+            border-radius: 16px; border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm); margin-bottom: 28px;
+        }
+        .urban-param-card { border-left: 4px solid var(--accent-color); padding-left: 14px; }
+        .urban-param-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; font-weight: 600; }
+        .urban-param-value { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+        .urban-param-unit { font-size: 13px; font-weight: 400; color: var(--text-secondary); }
+        .urban-charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 60px; }
+        .urban-chart-card {
+            background: var(--bg-card); border-radius: 16px; padding: 28px;
+            box-shadow: var(--shadow-md); border: 1px solid var(--border-color);
+            height: 420px; display: flex; flex-direction: column;
+        }
+        .urban-chart-card.full-width { grid-column: 1 / -1; height: 360px; }
+        .urban-chart-header { margin-bottom: 20px; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); }
+        .urban-chart-header h3 { font-size: 17px; color: var(--text-primary); font-weight: 700; }
+        .urban-chart-canvas { flex: 1; position: relative; width: 100%; }
+        /* ── Grid Tooltip on Hover ── */
+        .grid-tooltip {
+            background: rgba(15, 23, 42, 0.92) !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 13px !important;
+            padding: 8px 12px !important;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4) !important;
+            pointer-events: none !important;
+            line-height: 1.6 !important;
+        }
+        .grid-tooltip::before { display: none !important; }
+        .grid-tooltip b { font-size: 14px; }
+        .grid-tooltip span { color: #94a3b8; font-size: 11px; }
+
+        /* ── Weather (stacked under map in details view; Open-Meteo) ── */
+        #weather-panel {
+            display: none;
+            flex-direction: column;
+            width: 360px;
+            height: 360px;
+            flex: 0 0 360px;
+            box-sizing: border-box;
+            padding: 16px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            pointer-events: auto;
+        }
+        body.details-open #weather-panel {
+            display: flex;
+        }
+        .weather-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        #w-icon {
+            font-size: 40px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .weather-titles { min-width: 0; flex: 1; }
+        #w-place {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.25;
+            word-break: break-word;
+        }
+        #w-city {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        #w-coords {
+            font-size: 11px;
+            font-family: ui-monospace, monospace;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+        #w-temp {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-color);
+            line-height: 1.1;
+            margin-top: auto;
+            margin-bottom: 8px;
+        }
+        #w-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        #colormap-legend.legend-muted {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
 
 <body>
-    
+
+    <!-- ── Rama's Grid Selector ── -->
     <div id="grid-selector">
         <div class="dropdown-group">
             <span class="dropdown-label">City</span>
@@ -34,90 +535,94 @@
         </div>
     </div>
 
+    <!-- ── Rama's Top Bar ── -->
     <div id="top-bar">
-        <a href="./index.html" class="icon-button" title="Back to Home" style="text-decoration: none;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-        </a>
         <div class="app-title">
-    <img src="logo.png" alt="EcoKnowledge Logo" style="width: 24px; height: 24px; border-radius: 4px;">
-    AP EcoGrid Analysis
-</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+            AP EcoGrid Analysis
+        </div>
         <button id="theme-toggle" class="icon-button" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                style="display:none">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
         </button>
     </div>
 
-    <!-- ── Map (reparented into #details-rail while grid analysis is open) ── -->
-    <div id="map"></div>
-    <!-- ── Rama's Details Panel (for grid clicks) ── -->
-    <div id="details-panel">
-        <div class="details-shell">
-            <div class="details-main-scroll">
-                <div class="details-content">
-                    <div class="details-header">
-                        <div class="details-title">
-                            <h1 id="details-title">Grid Cell Details</h1>
-                            <p id="details-subtitle">Click Coordinates</p>
-                        </div>
-                        <div class="details-dropdowns" id="details-grid-selector">
-                            <div class="dropdown-group">
-                                <span class="dropdown-label">City</span>
-                                <select id="details-city-select" class="styled-select"
-                                    onchange="onCitySelected(true, 'details')">
-                                    <option value="">Select a City</option>
-                                </select>
-                            </div>
-                            <div class="dropdown-group">
-                                <span class="dropdown-label">Grid</span>
-                                <select id="details-grid-select" class="styled-select"
-                                    onchange="onGridSelected('details')" disabled>
-                                    <option value="">Select Grid #</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button class="back-button" onclick="closeDetails()">&larr; Back to Full Map</button>
-                    </div>
-                    <div class="properties-container" id="details-properties"></div>
-                    <div class="charts-container" id="details-charts"></div>
+    <!-- ── Colormap Control ── -->
+    <div id="colormap-control">
+        <div class="dropdown-group">
+            <span class="dropdown-label">🎨 Color By</span>
+            <select id="colorParam" class="styled-select" onchange="applyColorMap()">
+                <option value="Urban_Health_Index" selected>Urban Health Index</option>
+                <option value="Greenness">Greenness (NDVI)</option>
+                <option value="Urban_Density">Urban Density</option>
+                <option value="UHI">UHI (Heat Island)</option>
+                <option value="LSTVI">LSTVI</option>
+                <option value="PM25">PM 2.5</option>
+            </select>
+        </div>
+        <div class="dropdown-group">
+            <span class="dropdown-label">Fill</span>
+            <select id="fillStyleMode" class="styled-select" onchange="applyFillStyle()" title="Grid overlay opacity">
+                <option value="solid" selected>Solid</option>
+                <option value="translucent">Translucent</option>
+                <option value="none">None</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- ── Colormap Legend ── -->
+    <div id="colormap-legend">
+        <div class="legend-title" id="legend-title">Urban Health Index</div>
+        <div class="legend-gradient" id="legend-gradient"></div>
+        <div class="legend-labels">
+            <span id="legend-min">Poor</span>
+            <span id="legend-max">Healthy</span>
+        </div>
+    </div>
+
+    <!-- ── Map + weather (rail stacks in details view) ── -->
+    <div id="map-weather-rail">
+        <div id="map"></div>
+        <aside id="weather-panel" aria-live="polite">
+            <div class="weather-top">
+                <div id="w-icon" role="img" aria-label="Weather condition">🌡️</div>
+                <div class="weather-titles">
+                    <div id="w-place">—</div>
+                    <div id="w-city">—</div>
+                    <div id="w-coords">—</div>
                 </div>
             </div>
-            <aside class="details-rail" id="details-rail" aria-label="Map and weather">
-                <aside id="weather-panel" class="weather-panel" aria-live="polite" aria-label="Weather at grid center">
-                    <div class="weather-panel__chrome">
-                        <div class="weather-panel__top">
-                            <span id="w-icon" class="weather-panel__icon" aria-hidden="true">…</span>
-                            <div class="weather-panel__top-text">
-                                <span class="weather-panel__eyebrow">Grid center</span>
-                                <span id="w-city" class="weather-panel__coords">—</span>
-                            </div>
-                        </div>
-                        <div id="w-temp" class="weather-panel__temp weather-panel__temp--pending">…</div>
-                        <p id="w-desc" class="weather-panel__desc"></p>
-                        <div class="weather-panel__footer">
-                            <span class="weather-panel__src">Open-Meteo</span>
-                        </div>
+            <div id="w-temp">—</div>
+            <div id="w-desc">Open a grid cell for weather.</div>
+        </aside>
+    </div>
+
+    <!-- ── Rama's Details Panel (for grid clicks) ── -->
+    <div id="details-panel">
+        <div class="details-content">
+            <div class="details-header">
+                <div class="details-title">
+                    <h1 id="details-title">Grid Cell Details</h1>
+                    <p id="details-subtitle">Click Coordinates</p>
+                </div>
+                <div class="details-dropdowns" id="details-grid-selector">
+                    <div class="dropdown-group">
+                        <span class="dropdown-label">City</span>
+                        <select id="details-city-select" class="styled-select" onchange="onCitySelected(true, 'details')">
+                            <option value="">Select a City</option>
+                        </select>
                     </div>
-                </aside>
-            </aside>
+                    <div class="dropdown-group">
+                        <span class="dropdown-label">Grid</span>
+                        <select id="details-grid-select" class="styled-select" onchange="onGridSelected('details')" disabled>
+                            <option value="">Select Grid #</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="back-button" onclick="closeDetails()">&larr; Back to Full Map</button>
+            </div>
+            <div class="properties-container" id="details-properties"></div>
+            <div class="charts-container" id="details-charts"></div>
         </div>
     </div>
 
@@ -127,27 +632,18 @@
     <div id="urban-input-panel">
         <div class="uip-header">
             <button class="uip-close" onclick="closeUrbanInput()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
             <h2>Urban Health Analysis</h2>
             <p>No grid data — enter parameters manually</p>
             <div class="uip-coord" id="uip-coord">—</div>
         </div>
         <div class="uip-body">
-            <div class="uip-field"><label>Greenness <em>NDVI 0–100</em></label><input type="number" id="u-g"
-                    placeholder="e.g. 45.5" step="0.1" /></div>
-            <div class="uip-field"><label>Urban Density <em>built-up fraction</em></label><input type="number" id="u-ud"
-                    placeholder="e.g. 10.2" step="0.1" /></div>
-            <div class="uip-field"><label>UHI <em>heat island °C</em></label><input type="number" id="u-uhi"
-                    placeholder="e.g. -0.5" step="0.1" /></div>
-            <div class="uip-field"><label>LSTVI <em>surface temp index</em></label><input type="number" id="u-lstvi"
-                    placeholder="e.g. 0.05" step="0.01" /></div>
-            <div class="uip-field"><label>PM 2.5 <em>µg/m³</em></label><input type="number" id="u-pm25"
-                    placeholder="e.g. 20.1" step="0.1" /></div>
+            <div class="uip-field"><label>Greenness <em>NDVI 0–100</em></label><input type="number" id="u-g" placeholder="e.g. 45.5" step="0.1"/></div>
+            <div class="uip-field"><label>Urban Density <em>built-up fraction</em></label><input type="number" id="u-ud" placeholder="e.g. 10.2" step="0.1"/></div>
+            <div class="uip-field"><label>UHI <em>heat island °C</em></label><input type="number" id="u-uhi" placeholder="e.g. -0.5" step="0.1"/></div>
+            <div class="uip-field"><label>LSTVI <em>surface temp index</em></label><input type="number" id="u-lstvi" placeholder="e.g. 0.05" step="0.01"/></div>
+            <div class="uip-field"><label>PM 2.5 <em>µg/m³</em></label><input type="number" id="u-pm25" placeholder="e.g. 20.1" step="0.1"/></div>
         </div>
         <div class="uip-footer">
             <button class="uip-btn" id="uip-btn" onclick="runUrbanModel()">Analyse Urban Health</button>
@@ -171,12 +667,9 @@
                 <div class="score-info">
                     <div class="score-cat" id="ur-cat">—</div>
                     <div class="score-desc" id="ur-desc">—</div>
-                    <div class="meter-outer">
-                        <div class="meter-inner" id="ur-meter"></div>
-                    </div>
+                    <div class="meter-outer"><div class="meter-inner" id="ur-meter"></div></div>
                     <div class="meter-labels">
-                        <span>1 · Poor</span><span>2</span><span>3 · Moderate</span><span>4</span><span>5 ·
-                            Healthy</span>
+                        <span>1 · Poor</span><span>2</span><span>3 · Moderate</span><span>4</span><span>5 · Healthy</span>
                     </div>
                 </div>
             </div>
@@ -188,15 +681,12 @@
     <!-- ── Loading Indicator (Rama's) ── -->
     <div class="loading-indicator active" id="main-loader">
         <div class="map-loader-container">
-            <svg class="map-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                stroke="var(--accent-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="map-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
                 <line x1="8" y1="2" x2="8" y2="18"></line>
                 <line x1="16" y1="6" x2="16" y2="22"></line>
             </svg>
-            <svg class="pin-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
-                fill="var(--accent-color)" stroke="var(--bg-card)" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
+            <svg class="pin-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="var(--accent-color)" stroke="var(--bg-card)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3" fill="var(--bg-card)"></circle>
             </svg>
@@ -211,201 +701,33 @@
         /* ════════════════════════════════════════════
            RAMA'S ORIGINAL CODE — untouched
         ════════════════════════════════════════════ */
-        let gridWeatherAbort = null;
+        function makeDraggable(el) {
+    let isDragging = false, offsetX, offsetY;
 
-        function openMeteoWmoLabel(code) {
-            const c = Number(code);
-            const pairs = [
-                [0, 'Clear sky'],
-                [[1, 2, 3], 'Mainly clear / cloudy'],
-                [[45, 48], 'Fog'],
-                [[51, 53, 55], 'Drizzle'],
-                [[56, 57], 'Freezing drizzle'],
-                [[61, 63, 65], 'Rain'],
-                [[66, 67], 'Freezing rain'],
-                [[71, 73, 75], 'Snow fall'],
-                [[77], 'Snow grains'],
-                [[80, 81, 82], 'Rain showers'],
-                [[85, 86], 'Snow showers'],
-                [[95], 'Thunderstorm'],
-                [[96, 99], 'Thunderstorm with hail']
-            ];
-            for (const [keys, label] of pairs) {
-                if (Array.isArray(keys) ? keys.includes(c) : keys === c) return label;
-            }
-            return 'Weather';
-        }
+    el.addEventListener("mousedown", (e) => {
+        isDragging = true;
 
-        function openMeteoWmoIcon(code) {
-            const c = Number(code);
-            const pairs = [
-                [0, '☀️'],
-                [[1, 2, 3], '☁️'],
-                [[45, 48], '🌫️'],
-                [[51, 53, 55], '🌦️'],
-                [[56, 57], '🌨️'],
-                [[61, 63, 65], '🌧️'],
-                [[66, 67], '🌨️'],
-                [[71, 73, 75], '❄️'],
-                [[77], '❄️'],
-                [[80, 81, 82], '🌦️'],
-                [[85, 86], '🌨️'],
-                [[95], '⛈️'],
-                [[96, 99], '⛈️']
-            ];
-            for (const [keys, icon] of pairs) {
-                if (Array.isArray(keys) ? keys.includes(c) : keys === c) return icon;
-            }
-            return '🌡️';
-        }
+        // remove transform (important for centered elements)
+        el.style.transform = "none";
 
-        function formatLatLonLine(lat, lon) {
-            return `${Number(lat).toFixed(5)}°, ${Number(lon).toFixed(5)}°`;
-        }
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
 
-        function formatPlaceFromBigDataCloud(d) {
-            if (!d || d.errors) return null;
-            const settlement = d.locality || d.city || d.town || d.village || d.suburb;
-            const state = d.principalSubdivision;
-            const country = d.countryName;
-            const parts = [];
-            if (settlement) parts.push(settlement);
-            if (state && state !== settlement) parts.push(state);
-            if (country && country !== state) parts.push(country);
-            return parts.length ? parts.join(', ') : null;
-        }
+        document.body.style.userSelect = "none";
+    });
 
-        function formatPlaceFromNominatim(d) {
-            if (!d || !d.address) return null;
-            const a = d.address;
-            const settlement = a.city || a.town || a.village || a.hamlet || a.suburb || a.neighbourhood
-                || a.municipality || a.county || a.state_district;
-            const state = a.state || a.region;
-            const country = a.country;
-            const parts = [];
-            if (settlement) parts.push(settlement);
-            if (state && state !== settlement) parts.push(state);
-            if (country && country !== state) parts.push(country);
-            if (parts.length) return parts.join(', ');
-            if (d.display_name) return d.display_name.split(',').slice(0, 3).join(',').trim();
-            return null;
-        }
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
 
-        async function reverseGeocodePlaceLines(lat, lon, signal) {
-            const coordLine = formatLatLonLine(lat, lon);
-            try {
-                const u = new URL('https://api.bigdatacloud.net/data/reverse-geocode-client');
-                u.searchParams.set('latitude', String(lat));
-                u.searchParams.set('longitude', String(lon));
-                u.searchParams.set('localityLanguage', 'en');
-                const r = await fetch(u.toString(), { signal });
-                if (r.ok) {
-                    const d = await r.json();
-                    const place = formatPlaceFromBigDataCloud(d);
-                    if (place) return `${place}\n${coordLine}`;
-                }
-            } catch (_) { /* try next */ }
-            try {
-                const u = new URL('https://nominatim.openstreetmap.org/reverse');
-                u.searchParams.set('format', 'jsonv2');
-                u.searchParams.set('lat', String(lat));
-                u.searchParams.set('lon', String(lon));
-                u.searchParams.set('zoom', '12');
-                u.searchParams.set('addressdetails', '1');
-                const r = await fetch(u.toString(), {
-                    signal,
-                    headers: { 'Accept-Language': 'en', 'Accept': 'application/json' }
-                });
-                if (r.ok) {
-                    const d = await r.json();
-                    const place = formatPlaceFromNominatim(d);
-                    if (place) return `${place}\n${coordLine}`;
-                }
-            } catch (_) { /* fall through */ }
-            return coordLine;
-        }
+        el.style.left = (e.clientX - offsetX) + "px";
+        el.style.top = (e.clientY - offsetY) + "px";
+    });
 
-        async function fetchWeather(lat, lon) {
-            const panel = document.getElementById('weather-panel');
-            const wIcon = document.getElementById('w-icon');
-            const wCity = document.getElementById('w-city');
-            const wTemp = document.getElementById('w-temp');
-            const wDesc = document.getElementById('w-desc');
-            if (!wCity || !wTemp || !wDesc) return;
-            if (panel) panel.classList.remove('weather-panel--error');
-            if (wIcon) wIcon.textContent = '…';
-            if (wTemp) {
-                wTemp.classList.add('weather-panel__temp--pending');
-                wTemp.textContent = '…';
-            }
-            if (gridWeatherAbort) gridWeatherAbort.abort();
-            gridWeatherAbort = new AbortController();
-            const { signal } = gridWeatherAbort;
-            const coordLine = formatLatLonLine(lat, lon);
-            wCity.textContent = `Locating…\n${coordLine}`;
-            wDesc.textContent = 'Loading forecast…';
-            const params = new URLSearchParams({
-                latitude: String(lat),
-                longitude: String(lon),
-                current: 'temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m',
-                wind_speed_unit: 'kmh',
-                timezone: 'auto'
-            });
-            const locationPromise = reverseGeocodePlaceLines(lat, lon, signal).then((text) => {
-                if (!signal.aborted && wCity) wCity.textContent = text;
-            }).catch(() => {
-                if (!signal.aborted && wCity) wCity.textContent = coordLine;
-            });
-            try {
-                const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, { signal });
-                if (!res.ok) throw new Error('Open-Meteo request failed');
-                const data = await res.json();
-                const cur = data.current;
-                if (!cur) throw new Error('No current weather');
-                const tUnit = (data.current_units && data.current_units.temperature_2m) || '°C';
-                if (wTemp) wTemp.classList.remove('weather-panel__temp--pending');
-                wTemp.textContent = cur.temperature_2m != null
-                    ? `${Math.round(cur.temperature_2m * 10) / 10}${tUnit}`
-                    : '—';
-                const label = openMeteoWmoLabel(cur.weather_code);
-                if (wIcon) wIcon.textContent = openMeteoWmoIcon(cur.weather_code);
-                const hum = cur.relative_humidity_2m != null ? `${Math.round(cur.relative_humidity_2m)}%` : '—';
-                const wSpd = cur.wind_speed_10m != null ? Math.round(cur.wind_speed_10m * 10) / 10 : null;
-                const wUnit = (data.current_units && data.current_units.wind_speed_10m) || 'km/h';
-                wDesc.textContent = `${label}\nHumidity ${hum} · Wind ${wSpd != null ? wSpd : '—'} ${wUnit}`;
-            } catch (err) {
-                if (err.name === 'AbortError') return;
-                console.error('Weather error:', err);
-                if (panel) panel.classList.add('weather-panel--error');
-                if (wIcon) wIcon.textContent = '⚠️';
-                if (wTemp) {
-                    wTemp.classList.remove('weather-panel__temp--pending');
-                    wTemp.textContent = '—';
-                }
-                wCity.textContent = coordLine;
-                wDesc.textContent = 'Could not load forecast. Check your connection and try again.';
-            }
-        }
-
-        function resetWeatherPanel() {
-            if (gridWeatherAbort) {
-                gridWeatherAbort.abort();
-                gridWeatherAbort = null;
-            }
-            const panel = document.getElementById('weather-panel');
-            const wIcon = document.getElementById('w-icon');
-            const wCity = document.getElementById('w-city');
-            const wTemp = document.getElementById('w-temp');
-            const wDesc = document.getElementById('w-desc');
-            if (panel) panel.classList.remove('weather-panel--error');
-            if (wIcon) wIcon.textContent = '…';
-            if (wCity) wCity.textContent = '—';
-            if (wTemp) {
-                wTemp.classList.add('weather-panel__temp--pending');
-                wTemp.textContent = '…';
-            }
-            if (wDesc) wDesc.textContent = '';
-        }
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+        document.body.style.userSelect = "auto";
+    });
+}
         function initTheme() {
             const savedTheme = localStorage.getItem('eco-theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -439,22 +761,6 @@
         let cityGrids = {}, featureLayerMap = {};
         let gridClicked = false; // flag to detect outside-grid clicks
 
-        function mountMapInDetailsRail() {
-            const rail = document.getElementById('details-rail');
-            const mapEl = document.getElementById('map');
-            if (!rail || !mapEl) return;
-            rail.appendChild(mapEl);
-            mapEl.classList.add('map-in-details-rail');
-        }
-
-        function parkMapFromDetailsRail() {
-            const mapEl = document.getElementById('map');
-            const panel = document.getElementById('details-panel');
-            if (!mapEl || !panel || !mapEl.classList.contains('map-in-details-rail')) return;
-            panel.before(mapEl);
-            mapEl.classList.remove('map-in-details-rail');
-        }
-
         function initMap() {
             map = L.map('map').setView([16.5, 80.6], 7);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -462,14 +768,142 @@
             }).addTo(map);
 
             // Outside-grid click → open urban health input panel
-            map.on('click', function (e) {
+            map.on('click', function(e) {
                 if (gridClicked) { gridClicked = false; return; }
                 openUrbanInput(e.latlng);
             });
         }
 
+        /* ══════════════════════════════════════════
+           COLORMAP FEATURE — new additions only
+        ══════════════════════════════════════════ */
+        function colormapColor(normValue) {
+            const stops = [
+                { v: 0.0,  r: 215, g: 48,  b: 39  },
+                { v: 0.25, r: 244, g: 109, b: 67  },
+                { v: 0.5,  r: 254, g: 224, b: 139 },
+                { v: 0.75, r: 166, g: 217, b: 106 },
+                { v: 1.0,  r: 26,  g: 152, b: 80  },
+            ];
+            const v = Math.max(0, Math.min(1, normValue));
+            let lo = stops[0], hi = stops[stops.length - 1];
+            for (let i = 0; i < stops.length - 1; i++) {
+                if (v >= stops[i].v && v <= stops[i+1].v) { lo = stops[i]; hi = stops[i+1]; break; }
+            }
+            const t = hi.v === lo.v ? 0 : (v - lo.v) / (hi.v - lo.v);
+            return `rgb(${Math.round(lo.r+t*(hi.r-lo.r))},${Math.round(lo.g+t*(hi.g-lo.g))},${Math.round(lo.b+t*(hi.b-lo.b))})`;
+        }
+
+        function getGridParamValue(city, gridId, param) {
+            const d = ecologyData[city] && ecologyData[city][gridId];
+            if (!d || !d[param]) return null;
+            const yr = d[param]['2024'];
+            if (!yr) return null;
+            const vals = [yr.summer, yr.winter].filter(v => v !== null && v !== undefined);
+            return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+        }
+
+        const PARAM_RANGES = {
+            Greenness:     { min: 0,    max: 100, higherIsBetter: true  },
+            Urban_Density: { min: 0,    max: 100, higherIsBetter: false },
+            UHI:           { min: -3,   max: 5,   higherIsBetter: false },
+            LSTVI:         { min: -0.1, max: 0.3, higherIsBetter: false },
+            PM25:          { min: 10,   max: 80,  higherIsBetter: false },
+        };
+
+        function computeGridScore(city, gridId) {
+            let total = 0, count = 0;
+            for (const [p, range] of Object.entries(PARAM_RANGES)) {
+                const val = getGridParamValue(city, gridId, p);
+                if (val === null) continue;
+                let norm = (val - range.min) / (range.max - range.min);
+                norm = Math.max(0, Math.min(1, norm));
+                if (!range.higherIsBetter) norm = 1 - norm;
+                total += norm; count++;
+            }
+            return count > 0 ? total / count : null;
+        }
+
+        let colormapCache = {};
+        let colormapMeta = { globalMin: 0, globalMax: 1, param: 'Urban_Health_Index', higherIsBetter: true };
+
+        function buildColormapCache(param) {
+            colormapCache = {};
+            const entries = [];
+            for (const [city, grids] of Object.entries(ecologyData)) {
+                for (const gridId of Object.keys(grids)) {
+                    const val = param === 'Urban_Health_Index'
+                        ? computeGridScore(city, gridId)
+                        : getGridParamValue(city, gridId, param);
+                    if (val !== null) {
+                        colormapCache[`${city}-${gridId}`] = val;
+                        entries.push(val);
+                    }
+                }
+            }
+            if (!entries.length) return { globalMin: 0, globalMax: 1 };
+            return { globalMin: Math.min(...entries), globalMax: Math.max(...entries) };
+        }
+
+        function applyColorMap() {
+            const param = document.getElementById('colorParam').value;
+            const { globalMin, globalMax } = buildColormapCache(param);
+            const higherIsBetter = param === 'Urban_Health_Index' ? true
+                : (PARAM_RANGES[param] ? PARAM_RANGES[param].higherIsBetter : true);
+            colormapMeta = { globalMin, globalMax, param, higherIsBetter };
+
+            document.getElementById('legend-title').textContent =
+                document.getElementById('colorParam').selectedOptions[0].text;
+            if (param === 'Urban_Health_Index') {
+                document.getElementById('legend-min').textContent = 'Poor';
+                document.getElementById('legend-max').textContent = 'Healthy';
+            } else {
+                document.getElementById('legend-min').textContent = globalMin.toFixed(1);
+                document.getElementById('legend-max').textContent = globalMax.toFixed(1);
+            }
+            document.getElementById('legend-gradient').style.background = higherIsBetter
+                ? 'linear-gradient(to right, #d73027, #fee08b, #1a9850)'
+                : 'linear-gradient(to right, #1a9850, #fee08b, #d73027)';
+
+            syncLegendFillHint();
+            if (geoJsonLayer) geoJsonLayer.eachLayer(l => l.setStyle(styleGrid(l.feature)));
+        }
+
+        function getFillStyleMode() {
+            const el = document.getElementById('fillStyleMode');
+            return el && el.value ? el.value : 'solid';
+        }
+
+        function syncLegendFillHint() {
+            const leg = document.getElementById('colormap-legend');
+            if (!leg) return;
+            if (getFillStyleMode() === 'none') leg.classList.add('legend-muted');
+            else leg.classList.remove('legend-muted');
+        }
+
+        function applyFillStyle() {
+            syncLegendFillHint();
+            if (geoJsonLayer) geoJsonLayer.eachLayer(l => l.setStyle(styleGrid(l.feature)));
+        }
+
         function styleGrid(feature) {
-            return { fillColor: '#3b82f6', color: '#2563eb', weight: 1.5, opacity: 0.6, fillOpacity: 0.15 };
+            const city = feature.properties && feature.properties.City;
+            const gridId = feature.properties && String(feature.properties.Grid_ID);
+            const val = colormapCache[`${city}-${gridId}`];
+            const mode = getFillStyleMode();
+            if (mode === 'none') {
+                return { fillColor: '#94a3b8', color: '#64748b', weight: 1.25, opacity: 0.85, fillOpacity: 0 };
+            }
+            let fillColor = '#3b82f6';
+            let fillOpacity = mode === 'translucent' ? 0.15 : 0.5;
+            let weight = 1;
+            if (val !== undefined && colormapMeta.globalMax !== colormapMeta.globalMin) {
+                let norm = (val - colormapMeta.globalMin) / (colormapMeta.globalMax - colormapMeta.globalMin);
+                norm = Math.max(0, Math.min(1, norm));
+                if (!colormapMeta.higherIsBetter) norm = 1 - norm;
+                fillColor = colormapColor(norm);
+            }
+            return { fillColor, color: '#1a202c', weight, opacity: 0.55, fillOpacity };
         }
 
         function populateCityDropdown(geoJsonData) {
@@ -582,16 +1016,118 @@
             return chart;
         }
 
+        function weatherCodeToEmoji(code) {
+            if (code === null || code === undefined || Number.isNaN(Number(code))) return '🌡️';
+            const c = Number(code);
+            if (c === 0) return '☀️';
+            if (c === 1) return '🌤️';
+            if (c === 2) return '⛅';
+            if (c === 3) return '☁️';
+            if (c === 45 || c === 48) return '🌫️';
+            if (c >= 51 && c <= 57) return '🌦️';
+            if (c >= 61 && c <= 67) return '🌧️';
+            if (c >= 71 && c <= 77) return '❄️';
+            if (c >= 80 && c <= 82) return '🌧️';
+            if (c >= 85 && c <= 86) return '🌨️';
+            if (c >= 95 && c <= 99) return '⛈️';
+            return '🌡️';
+        }
+
+        async function reverseLocaleName(lat, lon) {
+            try {
+                const u = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lon);
+                const res = await fetch(u, { headers: { 'Accept-Language': 'en' } });
+                if (!res.ok) throw new Error('nom');
+                const j = await res.json();
+                const a = j.address || {};
+                const pick = [a.suburb, a.neighbourhood, a.quarter, a.city_district, a.hamlet, a.village, a.town].filter(Boolean);
+                if (pick.length) return pick[0];
+                if (a.city || a.county) return a.city || a.county;
+                if (j.display_name) return j.display_name.split(',')[0].trim();
+            } catch (e) { /* fallback */ }
+            try {
+                const u2 = 'https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + encodeURIComponent(lat) + '&longitude=' + encodeURIComponent(lon) + '&localityLanguage=en';
+                const r2 = await fetch(u2);
+                if (!r2.ok) throw new Error('bdc');
+                const b = await r2.json();
+                return b.locality || b.city || b.principalSubdivision || '';
+            } catch (e2) {
+                return '';
+            }
+        }
+
+        function placeNameFromFeature(feature) {
+            const p = feature && feature.properties;
+            if (!p) return '';
+            return p.Locality || p.Suburb || p.Neighbourhood || p.Place_Name || p.place || p.Area || '';
+        }
+
+        async function fetchWeather(lat, lon, cityName, gridId, feature) {
+            const elIcon = document.getElementById('w-icon');
+            const elPlace = document.getElementById('w-place');
+            const elCity = document.getElementById('w-city');
+            const elCoords = document.getElementById('w-coords');
+            const elTemp = document.getElementById('w-temp');
+            const elDesc = document.getElementById('w-desc');
+            if (!elIcon || !elCity || !elTemp || !elDesc) return;
+
+            const latN = Number(lat);
+            const lonN = Number(lon);
+            const coordStr = (Number.isFinite(latN) && Number.isFinite(lonN))
+                ? latN.toFixed(5) + ', ' + lonN.toFixed(5)
+                : '—';
+            if (elCoords) elCoords.textContent = 'Center: ' + coordStr;
+            const fromGrid = placeNameFromFeature(feature);
+            if (elPlace) elPlace.textContent = fromGrid ? String(fromGrid) : 'Locating…';
+            elCity.textContent = (cityName != null && cityName !== '' ? String(cityName) : '—') + (gridId != null && gridId !== '' ? ' · Grid #' + gridId : '');
+            elIcon.textContent = '🌀';
+            elTemp.textContent = '…';
+            elDesc.textContent = 'Loading weather…';
+
+            const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + encodeURIComponent(lat) + '&longitude=' + encodeURIComponent(lon) + '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m';
+
+            try {
+                const [localeLabel, wres] = await Promise.all([
+                    fromGrid ? Promise.resolve(fromGrid) : reverseLocaleName(latN, lonN),
+                    fetch(url)
+                ]);
+                if (elPlace) {
+                    elPlace.textContent = localeLabel
+                        ? localeLabel
+                        : ('Local area (' + coordStr + ')');
+                }
+                if (!wres.ok) throw new Error('Weather HTTP ' + wres.status);
+                const data = await wres.json();
+                const cur = data && data.current;
+                if (!cur || cur.temperature_2m === undefined || cur.temperature_2m === null) throw new Error('Invalid weather payload');
+
+                elIcon.textContent = weatherCodeToEmoji(cur.weather_code);
+                elTemp.textContent = Math.round(Number(cur.temperature_2m)) + '°C';
+                const wind = cur.wind_speed_10m != null && cur.wind_speed_10m !== '' ? Number(cur.wind_speed_10m).toFixed(1) + ' km/h' : '—';
+                const hum = cur.relative_humidity_2m != null && cur.relative_humidity_2m !== '' ? String(cur.relative_humidity_2m) + '%' : '—';
+                elDesc.textContent = 'Wind ' + wind + ' · Humidity ' + hum;
+            } catch (err) {
+                console.error('fetchWeather:', err);
+                elIcon.textContent = '⚠️';
+                elTemp.textContent = '—';
+                elDesc.textContent = 'Weather unavailable';
+                if (elPlace && (elPlace.textContent === 'Locating…' || elPlace.textContent === '')) {
+                    elPlace.textContent = '—';
+                }
+            }
+        }
+
         function showDetails(e, feature, layer) {
             const city = feature.properties.City;
             const gridId = feature.properties.Grid_ID;
             const gridData = ecologyData[city] && ecologyData[city][gridId];
             syncDropdowns(city, gridId);
+            document.body.classList.add('details-open');
+            const center = layer.getBounds().getCenter();
+            fetchWeather(center.lat, center.lng, city, gridId, feature);
             const loader = document.querySelector('.loading-indicator');
             loader.classList.add('active');
             document.getElementById('details-title').innerText = `City: ${city} - ID #${gridId}`;
-            const center = layer.getBounds().getCenter();
-            fetchWeather(center.lat, center.lng);
             if (e && e.latlng) {
                 document.getElementById('details-subtitle').innerText = `Selected Coordinates: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
             } else {
@@ -627,12 +1163,11 @@
             }
             setTimeout(() => {
                 loader.classList.remove('active');
-                closeUrbanInput(); // Ensure external input is closed when grid opens
                 document.getElementById('details-panel').classList.add('active');
-                mountMapInDetailsRail();
                 document.getElementById('top-bar').classList.add('hidden');
                 document.getElementById('grid-selector').classList.add('hidden');
-                document.getElementById('map').classList.add('minimized');
+                document.getElementById('colormap-control').classList.add('hidden');
+                document.getElementById('colormap-legend').classList.add('hidden');
                 geoJsonLayer.eachLayer(l => l.setStyle(styleGrid(l.feature)));
                 layer.setStyle({ fillColor: '#f59e0b', color: '#d97706', weight: 3, fillOpacity: 0.5 });
                 setTimeout(() => { map.invalidateSize(); map.flyToBounds(layer.getBounds(), { padding: [15, 15], duration: 0.6 }); }, 450);
@@ -640,11 +1175,12 @@
         }
 
         function closeDetails() {
-            resetWeatherPanel();
-            parkMapFromDetailsRail();
+            document.body.classList.remove('details-open');
             document.getElementById('details-panel').classList.remove('active');
             document.getElementById('top-bar').classList.remove('hidden');
             document.getElementById('grid-selector').classList.remove('hidden');
+            document.getElementById('colormap-control').classList.remove('hidden');
+            document.getElementById('colormap-legend').classList.remove('hidden');
             document.getElementById('map').classList.remove('minimized');
             geoJsonLayer.eachLayer(l => l.setStyle(styleGrid(l.feature)));
             setTimeout(() => {
@@ -657,9 +1193,17 @@
             const city = feature.properties.City;
             const gridId = feature.properties.Grid_ID;
             if (city && gridId) featureLayerMap[`${city}-${gridId}`] = { feature, layer };
-            layer.on('click', function (e) {
+
+            // ── Hover tooltip — shows place name + grid id ──
+            layer.bindTooltip(
+                `<b>${city}</b><br><span>Grid #${gridId}</span>`,
+                { sticky: true, direction: 'top', className: 'grid-tooltip' }
+            );
+
+            layer.on('click', function(e) {
                 gridClicked = true; // prevent map click from firing
                 L.DomEvent.stopPropagation(e);
+                 closeUrbanInput(); 
                 showDetails(e, feature, layer); // Rama's handler
             });
         }
@@ -673,6 +1217,7 @@
                 const geoJsonResponse = await fetch('grid_data.geojson');
                 if (!geoJsonResponse.ok) throw new Error('grid_data.geojson not found');
                 const geoJsonData = await geoJsonResponse.json();
+                applyColorMap();
                 geoJsonLayer = L.geoJSON(geoJsonData, { style: styleGrid, onEachFeature }).addTo(map);
                 if (geoJsonLayer.getBounds().isValid()) map.fitBounds(geoJsonLayer.getBounds(), { padding: [50, 50] });
                 populateCityDropdown(geoJsonData);
@@ -683,45 +1228,63 @@
             }
         }
 
-        /* ══════════════════════════════════════
+        /* ════════════════════════════════════════════
            YOUR ADDITION — Urban Health for outside-grid
         ════════════════════════════════════════════ */
 
-        const API_URL = 'https://nbs-for-dss-prediction-model.onrender.com/predict';
+        const API_URL = 'https://84c9-14-139-176-131.ngrok-free.app/predict';
 
         const SCORE_META = {
-            1: { color: '#ef4444', label: 'Poor', desc: 'Severely degraded urban environment' },
-            2: { color: '#f97316', label: 'Fair', desc: 'Below average health conditions' },
-            3: { color: '#eab308', label: 'Moderate', desc: 'Average urban health conditions' },
-            4: { color: '#22c55e', label: 'Healthy', desc: 'Good urban environment quality' },
-            5: { color: '#10b981', label: 'Excellent', desc: 'Outstanding urban health conditions' },
+            1: { color:'#ef4444', label:'Poor',      desc:'Severely degraded urban environment' },
+            2: { color:'#f97316', label:'Fair',      desc:'Below average health conditions'     },
+            3: { color:'#eab308', label:'Moderate',  desc:'Average urban health conditions'     },
+            4: { color:'#22c55e', label:'Healthy',   desc:'Good urban environment quality'      },
+            5: { color:'#10b981', label:'Excellent', desc:'Outstanding urban health conditions' },
         };
 
         const URBAN_PARAMS = [
-            { id: 'u-g', key: 'Greenness', label: 'Greenness', unit: '', color: '#22c55e', max: 100 },
-            { id: 'u-ud', key: 'Urban_Density', label: 'Urban Density', unit: '', color: '#3b82f6', max: 100 },
-            { id: 'u-uhi', key: 'UHI', label: 'UHI', unit: '°C', color: '#f97316', max: 10 },
-            { id: 'u-lstvi', key: 'LSTVI', label: 'LSTVI', unit: '', color: '#a855f7', max: 1 },
-            { id: 'u-pm25', key: 'PM25', label: 'PM 2.5', unit: 'µg/m³', color: '#ef4444', max: 300 },
+            { id:'u-g',    key:'Greenness',     label:'Greenness',     unit:'',      color:'#22c55e', max:100 },
+            { id:'u-ud',   key:'Urban_Density', label:'Urban Density', unit:'',      color:'#3b82f6', max:100 },
+            { id:'u-uhi',  key:'UHI',           label:'UHI',           unit:'°C',    color:'#f97316', max:10  },
+            { id:'u-lstvi',key:'LSTVI',         label:'LSTVI',         unit:'',      color:'#a855f7', max:1   },
+            { id:'u-pm25', key:'PM25',          label:'PM 2.5',        unit:'µg/m³', color:'#ef4444', max:300 },
         ];
 
         let urbanCharts = [], urbanMarker = null;
 
         function openUrbanInput(latlng) {
-            if (urbanMarker) map.removeLayer(urbanMarker);
-            urbanMarker = L.circleMarker(latlng, {
-                radius: 9, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.35, weight: 2
-            }).addTo(map);
-            document.getElementById('uip-coord').textContent = `${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`;
-            document.getElementById('urban-input-panel').classList.add('open');
-            document.getElementById('uip-err').style.display = 'none';
-            document.getElementById('uip-loading').style.display = 'none';
-            document.getElementById('uip-btn').disabled = false;
-            URBAN_PARAMS.forEach(p => document.getElementById(p.id).value = '');
-        }
+    if (urbanMarker) map.removeLayer(urbanMarker);
+
+    urbanMarker = L.circleMarker(latlng, {
+        radius: 9,
+        color: '#3b82f6',
+        fillColor: '#3b82f6',
+        fillOpacity: 0.35,
+        weight: 2
+    }).addTo(map);
+
+    document.getElementById('uip-coord').textContent =
+        `${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`;
+
+    document.getElementById('urban-input-panel').classList.add('open');
+
+    // hide controls
+    document.getElementById('colormap-control').classList.add('hidden');
+    document.getElementById('colormap-legend').classList.add('hidden');
+
+    document.getElementById('uip-err').style.display = 'none';
+    document.getElementById('uip-loading').style.display = 'none';
+    document.getElementById('uip-btn').disabled = false;
+
+    URBAN_PARAMS.forEach(p =>
+        document.getElementById(p.id).value = ''
+    );
+}
 
         function closeUrbanInput() {
             document.getElementById('urban-input-panel').classList.remove('open');
+            document.getElementById('colormap-control').classList.remove('hidden');
+            document.getElementById('colormap-legend').classList.remove('hidden');
             if (urbanMarker) { map.removeLayer(urbanMarker); urbanMarker = null; }
         }
 
@@ -735,45 +1298,44 @@
             });
 
             if (hasEmpty) {
-                document.getElementById('uip-err').textContent = '⚠ Please fill in all 5 fields.';
+                document.getElementById('uip-err').textContent   = '⚠ Please fill in all 5 fields.';
                 document.getElementById('uip-err').style.display = 'block';
                 return;
             }
 
-            document.getElementById('uip-btn').disabled = true;
+            document.getElementById('uip-btn').disabled          = true;
             document.getElementById('uip-loading').style.display = 'block';
-            document.getElementById('uip-err').style.display = 'none';
+            document.getElementById('uip-err').style.display     = 'none';
 
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
+                const res  = await fetch(API_URL, {
+                    method : 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(vals)
+                    body   : JSON.stringify(vals)
                 });
                 const data = await res.json();
                 if (!data.success) throw new Error('model error');
                 closeUrbanInput();
                 showUrbanResults(data.prediction, vals);
-            } catch (err) {
-                document.getElementById('uip-err').textContent = '⚠ Could not reach the model. Is the backend running?';
+            } catch(err) {
+                document.getElementById('uip-err').textContent   = '⚠ Could not reach the model. Is the backend running?';
                 document.getElementById('uip-err').style.display = 'block';
-                document.getElementById('uip-btn').disabled = false;
+                document.getElementById('uip-btn').disabled      = false;
             } finally {
-                document.getElementById('uip-loing').style.display = 'none';
+                document.getElementById('uip-loading').style.display = 'none';
             }
         }
 
         function showUrbanResults(prediction, inputs) {
             const score = prediction.final_score;
-            const meta = SCORE_META[score] || SCORE_META[3];
+            const meta  = SCORE_META[score] || SCORE_META[3];
 
             document.getElementById('main-loader').classList.add('active');
 
             setTimeout(() => {
                 document.getElementById('main-loader').classList.remove('active');
-                parkMapFromDetailsRail();
 
-                document.getElementById('ur-title').textContent = `Urban Health Score: ${score} / 5`;
+                document.getElementById('ur-title').textContent    = `Urban Health Score: ${score} / 5`;
                 document.getElementById('ur-subtitle').textContent = `Category: ${prediction.category || meta.label}`;
 
                 const sn = document.getElementById('ur-score');
@@ -786,7 +1348,7 @@
 
                 const meter = document.getElementById('ur-meter');
                 meter.style.background = meta.color;
-                setTimeout(() => { meter.style.width = (((score - 1) / 4) * 100) + '%'; }, 100);
+                setTimeout(() => { meter.style.width = (((score-1)/4)*100) + '%'; }, 100);
 
                 if (urbanMarker) urbanMarker.setStyle({ color: meta.color, fillColor: meta.color });
 
@@ -803,6 +1365,8 @@
                 document.getElementById('urban-results-panel').classList.add('active');
                 document.getElementById('top-bar').classList.add('hidden');
                 document.getElementById('grid-selector').classList.add('hidden');
+                document.getElementById('colormap-control').classList.add('hidden');
+                document.getElementById('colormap-legend').classList.add('hidden');
                 document.getElementById('map').classList.add('minimized');
                 setTimeout(() => { map.invalidateSize(); }, 450);
 
@@ -821,34 +1385,35 @@
                     <div class="urban-chart-header"><h3>Relative Impact — Bar Chart</h3></div>
                     <div class="urban-chart-canvas"><canvas id="uc-bar"></canvas></div>
                 </div>
-                <div class="urban-chart-card full-width">                 <div class="urban-chart-header"><h3>Urban Health Score Gauge</h3></div>
+                <div class="urban-chart-card full-width">
+                    <div class="urban-chart-header"><h3>Urban Health Score Gauge</h3></div>
                     <div class="urban-chart-canvas"><canvas id="uc-donut"></canvas></div>
                 </div>`;
 
             const tColor = getComputedStyle(document.body).getPropertyValue('--text-primary').trim() || '#0f172a';
-            const gColor = getComputedStyle(document.body).getPropertyValue('--chart-grid').trim() || '#f1f5f9';
+            const gColor = getComputedStyle(document.body).getPropertyValue('--chart-grid').trim()   || '#f1f5f9';
             const labels = URBAN_PARAMS.map(p => p.label);
-            const absVals = URBAN_PARAMS.map(p => Math.abs(inputs[p.key] || 0));
-            const normed = URBAN_PARAMS.map(p => +Math.min(100, (Math.abs(inputs[p.key] || 0) / p.max) * 100).toFixed(1));
+            const absVals= URBAN_PARAMS.map(p => Math.abs(inputs[p.key] || 0));
+            const normed = URBAN_PARAMS.map(p => +Math.min(100,(Math.abs(inputs[p.key]||0)/p.max)*100).toFixed(1));
             const colors = URBAN_PARAMS.map(p => p.color);
 
             setTimeout(() => {
                 urbanCharts.push(new Chart(document.getElementById('uc-radar'), {
-                    type: 'radar',
-                    data: { labels, datasets: [{ label: 'Input values', data: absVals, borderColor: scoreColor, backgroundColor: scoreColor + '22', borderWidth: 2, pointBackgroundColor: colors, pointRadius: 5, pointHoverRadius: 7 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: tColor, font: { size: 13, family: "'Inter',sans-serif" }, usePointStyle: true, padding: 20 } } }, scales: { r: { ticks: { color: tColor, backdropColor: 'transparent', font: { size: 10 } }, grid: { color: gColor }, pointLabels: { color: tColor, font: { size: 12 } }, angleLines: { color: gColor } } } }
+                    type:'radar',
+                    data:{ labels, datasets:[{ label:'Input values', data:absVals, borderColor:scoreColor, backgroundColor:scoreColor+'22', borderWidth:2, pointBackgroundColor:colors, pointRadius:5, pointHoverRadius:7 }] },
+                    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:tColor, font:{size:13,family:"'Inter',sans-serif"}, usePointStyle:true, padding:20 }}}, scales:{ r:{ ticks:{color:tColor,backdropColor:'transparent',font:{size:10}}, grid:{color:gColor}, pointLabels:{color:tColor,font:{size:12}}, angleLines:{color:gColor} }}}
                 }));
 
                 urbanCharts.push(new Chart(document.getElementById('uc-bar'), {
-                    type: 'bar',
-                    data: { labels, datasets: [{ label: 'Relative intensity (%)', data: normed, backgroundColor: colors.map(c => c + 'bb'), borderColor: colors, borderWidth: 1.5, borderRadius: 6 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: tColor, font: { size: 13, family: "'Inter',sans-serif" }, usePointStyle: true, padding: 20 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y}% of typical max` } } }, scales: { x: { ticks: { color: tColor, font: { size: 12 } }, grid: { display: false } }, y: { max: 100, ticks: { color: tColor, font: { size: 12 } }, grid: { color: gColor }, title: { display: true, text: 'Relative %', color: tColor } } } }
+                    type:'bar',
+                    data:{ labels, datasets:[{ label:'Relative intensity (%)', data:normed, backgroundColor:colors.map(c=>c+'bb'), borderColor:colors, borderWidth:1.5, borderRadius:6 }] },
+                    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{color:tColor,font:{size:13,family:"'Inter',sans-serif"},usePointStyle:true,padding:20}}, tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.y}% of typical max`}}}, scales:{ x:{ticks:{color:tColor,font:{size:12}},grid:{display:false}}, y:{max:100,ticks:{color:tColor,font:{size:12}},grid:{color:gColor},title:{display:true,text:'Relative %',color:tColor}}}}
                 }));
 
                 urbanCharts.push(new Chart(document.getElementById('uc-donut'), {
-                    type: 'doughnut',
-                    data: { labels: ['Health Score', 'Remaining'], datasets: [{ data: [score, 5 - score], backgroundColor: [scoreColor, gColor], borderWidth: 0, circumference: 270, rotation: 225 }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { labels: { color: tColor, font: { size: 13, family: "'Inter',sans-serif" }, usePointStyle: true, padding: 20 } }, tooltip: { callbacks: { label: ctx => ctx.label === 'Health Score' ? ` Score: ${score}/5` : ` Potential: ${5 - score}` } } } }
+                    type:'doughnut',
+                    data:{ labels:['Health Score','Remaining'], datasets:[{ data:[score,5-score], backgroundColor:[scoreColor,gColor], borderWidth:0, circumference:270, rotation:225 }] },
+                    options:{ responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{labels:{color:tColor,font:{size:13,family:"'Inter',sans-serif"},usePointStyle:true,padding:20}}, tooltip:{callbacks:{label:ctx=>ctx.label==='Health Score'?` Score: ${score}/5`:` Potential: ${5-score}`}}}}
                 }));
             }, 100);
         }
@@ -862,73 +1427,28 @@
             document.getElementById('urban-results-panel').classList.remove('active');
             document.getElementById('top-bar').classList.remove('hidden');
             document.getElementById('grid-selector').classList.remove('hidden');
+            document.getElementById('colormap-control').classList.remove('hidden');
+            document.getElementById('colormap-legend').classList.remove('hidden');
             document.getElementById('map').classList.remove('minimized');
             destroyUrbanCharts();
             setTimeout(() => {
                 map.invalidateSize();
                 if (geoJsonLayer && geoJsonLayer.getBounds().isValid()) {
-                    map.flyToBounds(geoJsonLayer.getBounds(), { padding: [50, 50], duration: 0.8 });
+                    map.flyToBounds(geoJsonLayer.getBounds(), { padding:[50,50], duration:0.8 });
                 }
             }, 450);
-        }
-
-        // Draggable windows helper
-        function makeDraggable(element, handleElem) {
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            handleElem = handleElem || element;
-            handleElem.onmousedown = dragMouseDown;
-
-            function dragMouseDown(e) {
-                e = e || window.event;
-                // Ignore drags on form inputs, buttons, and links to allow normal interactions
-                if (e.target.closest && e.target.closest('button, input, select, textarea, a')) return;
-                // Prevent interfering with click events inside charts or content unless it's strictly the header
-                if (handleElem !== element && !handleElem.contains(e.target)) return;
-
-                e.preventDefault();
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
-                
-                // Bring the active panel to front
-                let panels = document.querySelectorAll('#details-panel, #urban-input-panel, #urban-results-panel, #top-bar, #grid-selector');
-                panels.forEach(p => p.style.zIndex = 1000);
-                element.style.zIndex = 1002;
-            }
-
-            function elementDrag(e) {
-                e = e || window.event;
-                e.preventDefault();
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                element.style.top = (element.offsetTop - pos2) + "px";
-                element.style.left = (element.offsetLeft - pos1) + "px";
-                // Reset right/bottom constraints to avoid fighting with dragged top/left values
-                element.style.right = "auto";
-                element.style.bottom = "auto";
-                element.style.transform = "none";
-            }
-
-            function closeDragElement() {
-                document.onmouseup = null;
-                document.onmousemove = null;
-            }
         }
 
         // Boot
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             loadData();
-
-            // apply draggable
-            makeDraggable(document.getElementById('urban-input-panel'), document.querySelector('#urban-input-panel .uip-header'));
-            makeDraggable(document.getElementById('grid-selector'));
-            makeDraggable(document.getElementById('top-bar'));
+            window.addEventListener("load", () => {
+    makeDraggable(document.getElementById("grid-selector"));
+    makeDraggable(document.getElementById("top-bar"));
+    makeDraggable(document.getElementById("colormap-control"));
+});
         });
     </script>
 </body>
-
 </html>
