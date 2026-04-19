@@ -78,10 +78,10 @@
         /* Central Pop-up Styles */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 998; opacity: 0; transition: opacity 0.3s ease; }
         .pop-active .overlay { display: block; opacity: 1; cursor: pointer; }
-
+        
         .centered-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%) scale(0.95); width: 90%; max-width: 1100px; background: #0a0d14; border: 1px solid rgba(52, 211, 153, 0.2); border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); z-index: 1000; opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .pop-active .centered-popup { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-
+        
         .close-pop { position: absolute; top: 1rem; right: 1.5rem; cursor: pointer; color: #64748b; font-size: 2rem; line-height: 1; transition: color 0.2s; }
         .close-pop:hover { color: #34d399; }
     </style>
@@ -89,319 +89,361 @@
 
 <body class="p-4 md:p-6 lg:p-10 relative min-h-screen">
 
-<div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-    <div class="absolute top-[10%] left-[20%] w-[30vw] h-[30vw] rounded-full bg-emerald-900/10 blur-[100px]"></div>
-    <div class="absolute bottom-[10%] right-[20%] w-[30vw] h-[30vw] rounded-full bg-teal-900/10 blur-[100px]"></div>
-</div>
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute top-[10%] left-[20%] w-[30vw] h-[30vw] rounded-full bg-emerald-900/10 blur-[100px]"></div>
+        <div class="absolute bottom-[10%] right-[20%] w-[30vw] h-[30vw] rounded-full bg-teal-900/10 blur-[100px]"></div>
+    </div>
 
-<div id="bgOverlay" class="overlay"></div>
+    <div id="bgOverlay" class="overlay"></div>
 
-<div class="max-w-[1600px] mx-auto space-y-6 md:space-y-10">
+    <div class="max-w-[1600px] mx-auto space-y-6 md:space-y-10">
 
-    <nav class="nav-bar flex flex-wrap items-center justify-between p-5 glass-card sticky top-4 z-50 border-emerald-500/10 opacity-0">
-        <div class="flex items-center gap-3">
-            <img src="logo.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10">
-            <span class="text-xl md:text-2xl font-black tracking-tighter">EcoKnowledge</span>
-        </div>
-
-        <button id="menu-toggle" class="lg:hidden text-slate-400 p-2">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-            </svg>
-        </button>
-
-        <div id="nav-menu" class="hidden-mobile w-full lg:w-auto lg:flex gap-4 lg:gap-8 text-[10px] font-bold uppercase tracking-widest mt-4 lg:mt-0">
-            <a href="#" class="block py-2 text-emerald-400 border-b-2 border-emerald-400 lg:border-none transition-colors">Simulation</a>
-            <a href="./index_final.html" class="block py-2 text-slate-400 hover:text-white transition-colors">View AP EcoGrid Analysis</a>
-            <a href="#" id="nav-model-interp" class="block py-2 text-slate-400 hover:text-white transition-colors cursor-pointer">Model Interpretation Analysis</a>
-        </div>
-    </nav>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 relative mt-10 items-stretch">
-
-        <div id="left-panel" class="hidden xl:flex flex-col xl:col-span-1 glass-card p-8 order-2 xl:order-1 opacity-0">
-            <h3 class="text-sm font-black text-emerald-400 uppercase tracking-[0.2em] mb-6 text-center xl:text-left border-b border-emerald-500/20 pb-4">Parameter Glossary</h3>
-            <ul class="flex-1 flex flex-col justify-around space-y-4 text-[15px] text-slate-300 leading-relaxed">
-                <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">Greenness (%)</strong> Percentage of area covered by active vegetation and biomass.</li>
-                <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">Urban Density</strong> Concentration of built infrastructural environments.</li>
-                <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">UHI Effect</strong> Urban Heat Island variation from surrounding rural baselines.</li>
-                <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">LSTVI Dynamics</strong> Land Surface Temperature to Vegetation Index ratio.</li>
-                <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">PM 2.5 Levels</strong> Fine particulate matter indicating local air quality.</li>
-            </ul>
-        </div>
-
-        <div id="form-panel" class="md:col-span-2 xl:col-start-2 xl:col-span-2 glass-card p-6 md:p-10 order-1 xl:order-2 border-emerald-500/20 shadow-2xl opacity-0 transform scale-95 transition-all duration-700 relative z-20">
-            <div class="text-center mb-8">
-                <h1 class="text-2xl md:text-3xl font-black mb-2">Environmental Simulator</h1>
-                <p class="text-base text-slate-400">Adjust parameters to forecast ecological health</p>
+        <nav class="nav-bar flex flex-wrap items-center justify-between p-5 glass-card sticky top-4 z-50 border-emerald-500/10 opacity-0">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10">
+                <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-emerald-400 transition-colors cursor-pointer" onclick="window.location.href='index.html'">EcoKnowledge</span>
             </div>
-            <form id="ecoForm" class="flex flex-col gap-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-xs text-slate-400 font-bold uppercase tracking-wider ml-1">Greenness (%)</label>
-                            <input type="number" step="any" name="Greenness" value="45.5" class="p-3 md:p-4 text-xl font-black text-emerald-300 mt-1">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 font-bold uppercase tracking-wider ml-1">Urban Density</label>
-                            <input type="number" step="any" name="Urban_Density" value="10.2" class="p-3 md:p-4 text-xl font-black text-emerald-300 mt-1">
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-2">
+
+            <button id="menu-toggle" class="lg:hidden text-slate-400 p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <div id="nav-menu" class="hidden-mobile w-full lg:w-auto lg:flex gap-4 lg:gap-8 text-[10px] font-bold uppercase tracking-widest mt-4 lg:mt-0">
+                <a href="#" class="block py-2 text-emerald-400 border-b-2 border-emerald-400 lg:border-none transition-colors">Simulation</a>
+                <a href="./index_final.html" class="block py-2 text-slate-400 hover:text-white transition-colors">View AP EcoGrid Analysis</a>
+                <a href="#" id="nav-model-interp" class="block py-2 text-slate-400 hover:text-white transition-colors cursor-pointer">Model Interpretation Analysis</a>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 relative mt-10 items-stretch">
+            
+            <div id="left-panel" class="hidden xl:flex flex-col xl:col-span-1 glass-card p-8 order-2 xl:order-1 opacity-0">
+                <h3 class="text-sm font-black text-emerald-400 uppercase tracking-[0.2em] mb-6 text-center xl:text-left border-b border-emerald-500/20 pb-4">Parameter Glossary</h3>
+                <ul class="flex-1 flex flex-col justify-around space-y-4 text-[15px] text-slate-300 leading-relaxed">
+                    <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">Greenness (%)</strong> Percentage of area covered by active vegetation and biomass.</li>
+                    <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">Urban Density</strong> Concentration of built infrastructural environments.</li>
+                    <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">UHI Effect</strong> Urban Heat Island variation from surrounding rural baselines.</li>
+                    <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">LSTVI Dynamics</strong> Land Surface Temperature to Vegetation Index ratio.</li>
+                    <li class="flex flex-col"><strong class="text-white text-base mb-1 tracking-wide">PM 2.5 Levels</strong> Fine particulate matter indicating local air quality.</li>
+                </ul>
+            </div>
+
+            <div id="form-panel" class="md:col-span-2 xl:col-start-2 xl:col-span-2 glass-card p-6 md:p-10 order-1 xl:order-2 border-emerald-500/20 shadow-2xl opacity-0 transform scale-95 transition-all duration-700 relative z-20">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl md:text-3xl font-black mb-2">Environmental Simulator</h1>
+                    <p class="text-base text-slate-400">Adjust parameters to forecast ecological health</p>
+                </div>
+                <form id="ecoForm" class="flex flex-col gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
+                        <div class="space-y-4">
                             <div>
-                                <label class="text-xs text-slate-400 uppercase tracking-wider ml-1">UHI</label>
-                                <input type="number" step="any" name="UHI" value="-0.5" class="p-3 text-lg font-bold mt-1">
+                                <label class="text-xs text-slate-400 font-bold uppercase tracking-wider ml-1">Greenness (%)</label>
+                                <input type="number" step="any" name="Greenness" value="45.5" class="p-3 md:p-4 text-xl font-black text-emerald-300 mt-1">
                             </div>
                             <div>
-                                <label class="text-xs text-slate-400 uppercase tracking-wider ml-1">LSTVI</label>
-                                <input type="number" step="any" name="LSTVI" value="0.05" class="p-3 text-lg font-bold mt-1">
+                                <label class="text-xs text-slate-400 font-bold uppercase tracking-wider ml-1">Urban Density</label>
+                                <input type="number" step="any" name="Urban_Density" value="10.2" class="p-3 md:p-4 text-xl font-black text-emerald-300 mt-1">
                             </div>
                         </div>
-                        <div>
-                            <label class="text-xs text-slate-400 font-bold uppercase tracking-wider ml-1">PM 2.5 Levels</label>
-                            <input type="number" step="any" name="PM25" value="20.1" class="p-3 md:p-4 text-xl font-black text-red-400 mt-1 border-red-500/20">
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-slate-400 uppercase tracking-wider ml-1">UHI</label>
+                                    <input type="number" step="any" name="UHI" value="-0.5" class="p-3 text-lg font-bold mt-1">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-400 uppercase tracking-wider ml-1">LSTVI</label>
+                                    <input type="number" step="any" name="LSTVI" value="0.05" class="p-3 text-lg font-bold mt-1">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400 font-bold uppercase tracking-wider ml-1">PM 2.5 Levels</label>
+                                <input type="number" step="any" name="PM25" value="20.1" class="p-3 md:p-4 text-xl font-black text-red-400 mt-1 border-red-500/20">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="flex flex-col gap-6 mt-6">
-                    <div id="resultDisplay" class="hidden text-center p-8 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-                        <h2 id="resCategory" class="text-3xl font-black italic text-white tracking-wide">Healthy</h2>
-                        <div class="text-6xl md:text-7xl font-black mt-3 text-emerald-400 drop-shadow-2xl" id="resScore">0.00</div>
+                    <div class="flex flex-col gap-6 mt-6">
+                        <div id="resultDisplay" class="hidden text-center p-8 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                            <h2 id="resCategory" class="text-3xl font-black italic text-white tracking-wide">Healthy</h2>
+                            <div class="text-6xl md:text-7xl font-black mt-3 text-emerald-400 drop-shadow-2xl" id="resScore">0.00</div>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="w-full bg-emerald-500 text-black font-black py-4 md:py-5 text-lg uppercase tracking-wide rounded-xl hover:bg-emerald-400 active:scale-[0.98] transition-all flex justify-center items-center gap-3 shadow-lg shadow-emerald-500/20 mt-2">
+                            <span id="btnText">Analyze Environment</span>
+                            <div id="loader" class="hidden w-6 h-6 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+                        </button>
                     </div>
+                </form>
+            </div>
 
-                    <button type="submit" id="submitBtn" class="w-full bg-emerald-500 text-black font-black py-4 md:py-5 text-lg uppercase tracking-wide rounded-xl hover:bg-emerald-400 active:scale-[0.98] transition-all flex justify-center items-center gap-3 shadow-lg shadow-emerald-500/20 mt-2">
-                        <span id="btnText">Analyze Environment</span>
-                        <div id="loader" class="hidden w-6 h-6 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-                    </button>
+            <div id="right-panel" class="hidden xl:flex flex-col xl:col-span-1 glass-card p-8 order-3 opacity-0">
+                <h3 class="text-sm font-black text-emerald-400 uppercase tracking-[0.2em] mb-6 text-center xl:text-left border-b border-emerald-500/20 pb-4">Ecological Balance</h3>
+                
+                <div id="dynamic-suggestions" class="flex-1 flex flex-col justify-center space-y-6 text-[15px] text-slate-300 leading-relaxed">
+                    <div class="text-center space-y-4 opacity-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                        <p>Run a simulation to generate tailored urban planning suggestions based on the ecological health score.</p>
+                    </div>
                 </div>
-            </form>
+
+            </div>
         </div>
 
-        <div id="right-panel" class="hidden xl:flex flex-col xl:col-span-1 glass-card p-8 order-3 opacity-0">
-            <h3 class="text-sm font-black text-emerald-400 uppercase tracking-[0.2em] mb-6 text-center xl:text-left border-b border-emerald-500/20 pb-4">Ecological Balance</h3>
-            <div class="flex-1 flex flex-col justify-around space-y-6 text-[15px] text-slate-300 leading-relaxed text-justify">
-                <p>Sustainable urban planning requires balancing infrastructural growth with aggressive environmental preservation strategies.</p>
-                <p>Elevated <strong class="text-white">Urban Density</strong> directly exacerbates the <strong class="text-white">UHI</strong> effect and increases <strong class="text-white">PM 2.5</strong> emissions, heavily compromising localized public health indices.</p>
-                <p>Maintaining optimal <strong class="text-white">Greenness</strong> acts as a vital countermeasure, serving as a natural carbon sink and promoting thermal regulation within the AP EcoGrid.</p>
+        <div id="chart-section" class="hidden grid-cols-1 lg:grid-cols-2 gap-6 pb-10">
+            <div class="chart-card glass-card p-6 md:p-8 opacity-0">
+                <h3 class="font-bold text-base md:text-lg mb-6 flex flex-wrap justify-between items-center gap-2">
+                    Environmental Benchmarking
+                    <span class="text-[10px] font-black text-emerald-900 bg-emerald-400 px-3 py-1 rounded uppercase tracking-widest">2026 INDIA TARGETS</span>
+                </h3>
+                <div class="h-64 md:h-80"><canvas id="benchChart"></canvas></div>
+            </div>
+
+            <div class="chart-card glass-card p-6 md:p-8 opacity-0">
+                <h3 class="font-bold text-base md:text-lg mb-2">Correlation Profile</h3>
+                <div class="h-64 md:h-80 relative">
+                    <div class="absolute bottom-0 left-0 w-full flex justify-between px-1 md:px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest pointer-events-none">
+                        <span>Min</span>
+                        <span class="text-emerald-500/50">Optimal</span>
+                        <span>Max</span>
+                    </div>
+                    <canvas id="corrChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="chart-section" class="hidden grid-cols-1 lg:grid-cols-2 gap-6 pb-10">
-        <div class="chart-card glass-card p-6 md:p-8 opacity-0">
-            <h3 class="font-bold text-base md:text-lg mb-6 flex flex-wrap justify-between items-center gap-2">
-                Environmental Benchmarking
-                <span class="text-[10px] font-black text-emerald-900 bg-emerald-400 px-3 py-1 rounded uppercase tracking-widest">2026 INDIA TARGETS</span>
-            </h3>
-            <div class="h-64 md:h-80"><canvas id="benchChart"></canvas></div>
-        </div>
-
-        <div class="chart-card glass-card p-6 md:p-8 opacity-0">
-            <h3 class="font-bold text-base md:text-lg mb-2">Correlation Profile</h3>
-            <div class="h-64 md:h-80 relative">
-                <div class="absolute bottom-0 left-0 w-full flex justify-between px-1 md:px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest pointer-events-none">
-                    <span>Min</span>
-                    <span class="text-emerald-500/50">Optimal</span>
-                    <span>Max</span>
+    <div id="centralPopUp" class="centered-popup">
+        <span id="closePop" class="close-pop">&times;</span>
+        <div class="p-8 md:p-10">
+            <h2 class="text-2xl md:text-3xl font-black text-center text-white mb-8 tracking-tight uppercase">Model Interpretation Analysis</h2>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="flex-1 bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col">
+                    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-[0.2em] mb-4 text-center">Global Weights</h3>
+                    <div class="flex-1 flex items-center justify-center">
+                        <img src="assets/summary.jpg" alt="SHAP Summary Plot" class="w-full rounded-lg shadow-2xl">
+                    </div>
                 </div>
-                <canvas id="corrChart"></canvas>
+                <div class="flex-1 bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col">
+                    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-[0.2em] mb-4 text-center">Local Decision Path</h3>
+                    <div class="flex-1 flex items-center justify-center">
+                        <img src="assets/waterfall%20plot.jpg" alt="SHAP Waterfall Plot" class="w-full rounded-lg shadow-2xl">
+                    </div>
+                </div>
             </div>
+            <p class="text-sm text-slate-400 italic text-center mt-8">Side-by-side comparison of global feature impacts vs. localized grid evaluation.</p>
         </div>
     </div>
-</div>
 
-<div id="centralPopUp" class="centered-popup">
-    <span id="closePop" class="close-pop">&times;</span>
-    <div class="p-8 md:p-10">
-        <h2 class="text-2xl md:text-3xl font-black text-center text-white mb-8 tracking-tight uppercase">Model Interpretation Analysis</h2>
-        <div class="flex flex-col md:flex-row gap-8">
-            <div class="flex-1 bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col">
-                <h3 class="text-xs font-black text-emerald-400 uppercase tracking-[0.2em] mb-4 text-center">Global Weights</h3>
-                <div class="flex-1 flex items-center justify-center">
-                    <img src="assets/summary.jpg" alt="SHAP Summary Plot" class="w-full rounded-lg shadow-2xl">
-                </div>
-            </div>
-            <div class="flex-1 bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col">
-                <h3 class="text-xs font-black text-emerald-400 uppercase tracking-[0.2em] mb-4 text-center">Local Decision Path</h3>
-                <div class="flex-1 flex items-center justify-center">
-                    <img src="assets/waterfall%20plot.jpg" alt="SHAP Waterfall Plot" class="w-full rounded-lg shadow-2xl">
-                </div>
-            </div>
-        </div>
-        <p class="text-sm text-slate-400 italic text-center mt-8">Side-by-side comparison of global feature impacts vs. localized grid evaluation.</p>
-    </div>
-</div>
+    <script>
+        // Mobile Menu
+        document.getElementById('menu-toggle').onclick = () => { document.getElementById('nav-menu').classList.toggle('hidden-mobile'); };
+        
+        // INITIAL PAGE LOAD ANIMATION
+        const tl = gsap.timeline();
+        tl.fromTo(".nav-bar", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" })
+          .fromTo("#form-panel", { y: 40, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }, "-=0.3");
 
-<script>
-    // Mobile Menu
-    document.getElementById('menu-toggle').onclick = () => { document.getElementById('nav-menu').classList.toggle('hidden-mobile'); };
+        // Pop-up Logic
+        const navTrigger = document.getElementById('nav-model-interp');
+        const closePop = document.getElementById('closePop');
+        const bgOverlay = document.getElementById('bgOverlay');
+        
+        const triggerPop = (e) => { e.preventDefault(); document.body.classList.add('pop-active'); };
+        const removePop = () => { document.body.classList.remove('pop-active'); };
+        
+        navTrigger.addEventListener('click', triggerPop);
+        closePop.addEventListener('click', removePop);
+        bgOverlay.addEventListener('click', removePop);
 
-    // INITIAL PAGE LOAD ANIMATION
-    const tl = gsap.timeline();
-    tl.fromTo(".nav-bar", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" })
-        .fromTo("#form-panel", { y: 40, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }, "-=0.3");
+        // Chart Initialization
+        const ctx1 = document.getElementById('benchChart').getContext('2d');
+        const ctx2 = document.getElementById('corrChart').getContext('2d');
 
-    // Pop-up Logic
-    const navTrigger = document.getElementById('nav-model-interp');
-    const closePop = document.getElementById('closePop');
-    const bgOverlay = document.getElementById('bgOverlay');
-
-    const triggerPop = (e) => { e.preventDefault(); document.body.classList.add('pop-active'); };
-    const removePop = () => { document.body.classList.remove('pop-active'); };
-
-    navTrigger.addEventListener('click', triggerPop);
-    closePop.addEventListener('click', removePop);
-    bgOverlay.addEventListener('click', removePop);
-
-    // Chart Initialization
-    const ctx1 = document.getElementById('benchChart').getContext('2d');
-    const ctx2 = document.getElementById('corrChart').getContext('2d');
-
-    const benchChart = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: ['Green %', 'PM 2.5', 'Density'],
-            datasets: [
-                { label: 'Simulation', data: [45.5, 20.1, 10.2], backgroundColor: '#34d399', borderRadius: 8 },
-                { label: 'Target', data: [35, 15, 12], backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 8 }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#f8fafc' } } },
-            plugins: { legend: { position: 'bottom', labels: { color: '#f8fafc', boxWidth: 10, font: { size: 10 } } } }
-        }
-    });
-
-    const corrChart = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            labels: Array.from({ length: 40 }, (_, i) => i),
-            datasets: [
-                {
-                    label: 'Curve',
-                    data: Array.from({ length: 40 }, (_, i) => 2 + 3 * Math.exp(-Math.pow(i - 20, 2) / 100)),
-                    borderColor: '#34d399', borderWidth: 2, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(52, 211, 153, 0.05)'
-                },
-                {
-                    label: 'Live', data: [{ x: 20, y: 5 }], type: 'scatter', backgroundColor: '#fff', borderColor: '#34d399', borderWidth: 3, pointRadius: 8
-                }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            scales: { y: { display: false, min: 0, max: 6 }, x: { display: false } },
-            plugins: { legend: { display: false } }
-        }
-    });
-
-    // Live Chart Updates on Input
-    document.getElementById('ecoForm').addEventListener('input', (e) => {
-        const formData = new FormData(document.getElementById('ecoForm'));
-        const green = parseFloat(formData.get('Greenness')) || 0;
-        const pm = parseFloat(formData.get('PM25')) || 0;
-
-        benchChart.data.datasets[0].data = [green, pm, parseFloat(formData.get('Urban_Density')) || 0];
-        benchChart.update('none');
-
-        let xPos = 20 + (green - 35) - (pm - 15);
-        xPos = Math.max(0, Math.min(39, xPos));
-        corrChart.data.datasets[1].data = [{ x: xPos, y: 2 + 3 * Math.exp(-Math.pow(xPos - 20, 2) / 100) }];
-        corrChart.update('none');
-    });
-
-    // State Variable for Animation
-    let dashboardRevealed = false;
-
-    function animateDashboardReveal() {
-        if (dashboardRevealed) return;
-        dashboardRevealed = true;
-
-        const leftPanel = document.getElementById('left-panel');
-        const rightPanel = document.getElementById('right-panel');
-        const chartSection = document.getElementById('chart-section');
-        const formPanel = document.getElementById('form-panel');
-
-        // 1. Remove the centering class from the form so it integrates with the side panels
-        formPanel.classList.remove('xl:col-start-2');
-
-        // 2. Unhide the DOM elements
-        leftPanel.classList.remove('hidden');
-        rightPanel.classList.remove('hidden');
-        chartSection.classList.remove('hidden');
-        chartSection.classList.add('grid');
-
-        // 3. GSAP Animation to slide everything in smoothly
-        gsap.fromTo([leftPanel, rightPanel],
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1 }
-        );
-
-        gsap.fromTo('.chart-card',
-            { opacity: 0, y: 50 },
-            { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.15, delay: 0.2 }
-        );
-
-        setTimeout(() => {
-            window.scrollBy({ top: 250, behavior: 'smooth' });
-        }, 600);
-    }
-
-    // Form Logic
-    document.getElementById('ecoForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        const loader = document.getElementById('loader');
-        const resultDisplay = document.getElementById('resultDisplay');
-        const btnText = document.getElementById('btnText');
-
-        btn.disabled = true;
-        btnText.innerText = "Analyzing Environment...";
-        loader.classList.remove('hidden');
-
-        try {
-            // Update this URL once your teammate deploys the backend
-            const response = await fetch('https://nbs-for-dss-prediction-model.onrender.com/predict', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    Greenness: parseFloat(e.target.Greenness.value),
-                    Urban_Density: parseFloat(e.target.Urban_Density.value),
-                    UHI: parseFloat(e.target.UHI.value),
-                    LSTVI: parseFloat(e.target.LSTVI.value),
-                    PM25: parseFloat(e.target.PM25.value)
-                })
-            });
-            const data = await response.json();
-
-            if (data.success) {
-                resultDisplay.classList.remove('hidden');
-
-                gsap.fromTo(resultDisplay,
-                    { scale: 0.9, opacity: 0 },
-                    { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" }
-                );
-
-                document.getElementById('resCategory').innerText = data.prediction.category;
-                gsap.to({ v: 0 }, {
-                    v: data.prediction.raw_score, duration: 1, ease: "power2.out", onUpdate: function () {
-                        document.getElementById('resScore').innerText = this.targets()[0].v.toFixed(2);
-                    }
-                });
-
-                // Trigger the massive dashboard reveal!
-                animateDashboardReveal();
+        const benchChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Green %', 'PM 2.5', 'Density'],
+                datasets: [
+                    { label: 'Simulation', data: [45.5, 20.1, 10.2], backgroundColor: '#34d399', borderRadius: 8 },
+                    { label: 'Target', data: [35, 15, 12], backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 8 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#f8fafc' } } },
+                plugins: { legend: { position: 'bottom', labels: { color: '#f8fafc', boxWidth: 10, font: { size: 10 } } } }
             }
-        } catch (err) {
-            alert("Backend Offline");
-        } finally {
-            btn.disabled = false;
-            btnText.innerText = "Re-Analyze Settings";
-            loader.classList.add('hidden');
+        });
+
+        const corrChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 40 }, (_, i) => i),
+                datasets: [
+                    {
+                        label: 'Curve',
+                        data: Array.from({ length: 40 }, (_, i) => 2 + 3 * Math.exp(-Math.pow(i - 20, 2) / 100)),
+                        borderColor: '#34d399', borderWidth: 2, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(52, 211, 153, 0.05)'
+                    },
+                    {
+                        label: 'Live', data: [{ x: 20, y: 5 }], type: 'scatter', backgroundColor: '#fff', borderColor: '#34d399', borderWidth: 3, pointRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { display: false, min: 0, max: 6 }, x: { display: false } },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Live Chart Updates on Input
+        document.getElementById('ecoForm').addEventListener('input', (e) => {
+            const formData = new FormData(document.getElementById('ecoForm'));
+            const green = parseFloat(formData.get('Greenness')) || 0;
+            const pm = parseFloat(formData.get('PM25')) || 0;
+
+            benchChart.data.datasets[0].data = [green, pm, parseFloat(formData.get('Urban_Density')) || 0];
+            benchChart.update('none');
+
+            let xPos = 20 + (green - 35) - (pm - 15);
+            xPos = Math.max(0, Math.min(39, xPos));
+            corrChart.data.datasets[1].data = [{ x: xPos, y: 2 + 3 * Math.exp(-Math.pow(xPos - 20, 2) / 100) }];
+            corrChart.update('none');
+        });
+
+        // State Variable for Animation
+        let dashboardRevealed = false;
+
+        function animateDashboardReveal() {
+            if (dashboardRevealed) return;
+            dashboardRevealed = true;
+
+            const leftPanel = document.getElementById('left-panel');
+            const rightPanel = document.getElementById('right-panel');
+            const chartSection = document.getElementById('chart-section');
+            const formPanel = document.getElementById('form-panel');
+
+            // 1. Remove the centering class from the form so it integrates with the side panels
+            formPanel.classList.remove('xl:col-start-2');
+            
+            // 2. Unhide the DOM elements
+            leftPanel.classList.remove('hidden');
+            rightPanel.classList.remove('hidden');
+            chartSection.classList.remove('hidden');
+            chartSection.classList.add('grid');
+
+            // 3. GSAP Animation to slide everything in smoothly
+            gsap.fromTo([leftPanel, rightPanel], 
+                { opacity: 0, y: 30 }, 
+                { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1 }
+            );
+
+            gsap.fromTo('.chart-card',
+                { opacity: 0, y: 50 },
+                { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.15, delay: 0.2 }
+            );
+
+            setTimeout(() => {
+                window.scrollBy({ top: 250, behavior: 'smooth' });
+            }, 600);
         }
-    });
-</script>
+
+        // Form Logic
+        document.getElementById('ecoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+            const resultDisplay = document.getElementById('resultDisplay');
+            const btnText = document.getElementById('btnText');
+
+            btn.disabled = true;
+            btnText.innerText = "Analyzing Environment...";
+            loader.classList.remove('hidden');
+
+            try {
+                const response = await fetch('https://eco-backend-api.onrender.com/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        Greenness: parseFloat(e.target.Greenness.value),
+                        Urban_Density: parseFloat(e.target.Urban_Density.value),
+                        UHI: parseFloat(e.target.UHI.value),
+                        LSTVI: parseFloat(e.target.LSTVI.value),
+                        PM25: parseFloat(e.target.PM25.value)
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDisplay.classList.remove('hidden');
+                    
+                    gsap.fromTo(resultDisplay, 
+                        { scale: 0.9, opacity: 0 }, 
+                        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" }
+                    );
+
+                    document.getElementById('resCategory').innerText = data.prediction.category;
+                    const finalScore = data.prediction.raw_score;
+
+                    gsap.to({ v: 0 }, {
+                        v: finalScore, duration: 1, ease: "power2.out", onUpdate: function () {
+                            document.getElementById('resScore').innerText = this.targets()[0].v.toFixed(2);
+                        }
+                    });
+
+                    // --- DYNAMIC SUGGESTIONS LOGIC ---
+                    let suggestionsHTML = "";
+                    if (finalScore < 2.5) {
+                        suggestionsHTML = `
+                            <p><strong class="text-white text-red-400 text-lg">Status: Critical Risk</strong></p>
+                            <p class="text-sm">This grid is experiencing severe environmental degradation. Immediate interventions are required.</p>
+                            <ul class="list-disc pl-4 space-y-3 mt-4 text-sm">
+                                <li><strong class="text-white">Emissions:</strong> Enforce strict PM 2.5 caps on local transport and industry.</li>
+                                <li><strong class="text-white">Heat Mitigation:</strong> Implement cool roofs and high-albedo pavements to combat the UHI effect.</li>
+                                <li><strong class="text-white">Greening:</strong> Mandate vertical gardens on high-density urban structures.</li>
+                            </ul>
+                        `;
+                    } else if (finalScore < 4.0) {
+                        suggestionsHTML = `
+                            <p><strong class="text-white text-orange-400 text-lg">Status: Moderate Stress</strong></p>
+                            <p class="text-sm">The ecological balance is fair, but infrastructural density is putting pressure on the environment.</p>
+                            <ul class="list-disc pl-4 space-y-3 mt-4 text-sm">
+                                <li><strong class="text-white">Zoning:</strong> Restrict further dense construction without adding proportional green spaces.</li>
+                                <li><strong class="text-white">Air Quality:</strong> Introduce low-emission zones to stabilize PM 2.5 levels.</li>
+                                <li><strong class="text-white">Surface Temp:</strong> Increase tree canopy coverage to improve LSTVI dynamics.</li>
+                            </ul>
+                        `;
+                    } else {
+                        suggestionsHTML = `
+                            <p><strong class="text-white text-emerald-400 text-lg">Status: Healthy & Balanced</strong></p>
+                            <p class="text-sm">This grid demonstrates excellent harmony between infrastructure and nature.</p>
+                            <ul class="list-disc pl-4 space-y-3 mt-4 text-sm">
+                                <li><strong class="text-white">Preservation:</strong> Enforce current zoning laws to protect existing biomass and carbon sinks.</li>
+                                <li><strong class="text-white">Benchmark:</strong> Utilize this sector's Greenness-to-Density ratio as a blueprint for developing areas.</li>
+                                <li><strong class="text-white">Monitoring:</strong> Maintain continuous air quality sensors to prevent baseline regression.</li>
+                            </ul>
+                        `;
+                    }
+                    
+                    // Inject the dynamic HTML into the panel
+                    document.getElementById('dynamic-suggestions').innerHTML = suggestionsHTML;
+                    // ---------------------------------
+
+                    // Trigger the massive dashboard reveal!
+                    animateDashboardReveal();
+                }
+            } catch (err) { 
+                alert("Backend Offline"); 
+            } finally { 
+                btn.disabled = false; 
+                btnText.innerText = "Re-Analyze Settings";
+                loader.classList.add('hidden'); 
+            }
+        });
+    </script>
 </body>
 </html>
