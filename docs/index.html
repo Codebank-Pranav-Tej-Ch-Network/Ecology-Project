@@ -8,13 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="./favicon.ico?v=2">
 
     <style>
         :root {
             --glass: rgba(15, 18, 24, 0.65);
             --accent: #34d399;
+            --accent-dark: #059669;
         }
 
         body {
@@ -25,6 +26,12 @@
             scroll-behavior: smooth;
         }
 
+        /* Custom Scrollbar for Docs */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(5, 7, 10, 0.8); }
+        ::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(52, 211, 153, 0.6); }
+
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(24px);
@@ -34,69 +41,70 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
+        /* Floating Animation */
         .floating-element {
             animation: float 6s ease-in-out infinite;
         }
-
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-15px); }
         }
 
+        /* Responsive Carousel Styles */
         .carousel-container {
             position: relative;
-            height: 600px;
+            height: 450px;
             overflow: hidden;
-            border-radius: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        @media (min-width: 768px) {
+            .carousel-container { height: 600px; border-radius: 2rem; }
+        }
+        
         .carousel-slide {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0;
             transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s ease-out;
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
             transform: scale(1.05);
         }
-
-        .carousel-slide.active {
-            opacity: 1;
-            transform: scale(1);
-        }
-
+        .carousel-slide.active { opacity: 1; transform: scale(1); }
         .carousel-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 30%, rgba(5, 7, 10, 0.9) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 4rem;
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 20%, rgba(5, 7, 10, 0.95) 100%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem;
         }
+        @media (min-width: 768px) { .carousel-overlay { padding: 4rem; } }
 
-        /* Ambient Background Effect */
+        .carousel-text {
+            transform: translateY(20px); opacity: 0; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+        .carousel-slide.active .carousel-text { transform: translateY(0); opacity: 1; }
+
+        /* Ambient Glow Backgrounds */
         .blob-1 {
-            position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw;
-            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(0,0,0,0) 70%);
+            position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, rgba(0,0,0,0) 70%);
             border-radius: 50%; filter: blur(60px); z-index: -1;
             animation: drift 20s ease-in-out infinite alternate;
         }
-        
         .blob-2 {
-            position: absolute; bottom: -20%; right: -10%; width: 60vw; height: 60vw;
-            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(0,0,0,0) 70%);
+            position: absolute; bottom: -20%; right: -10%; width: 70vw; height: 70vw;
+            background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(0,0,0,0) 70%);
             border-radius: 50%; filter: blur(80px); z-index: -1;
             animation: drift 25s ease-in-out infinite alternate-reverse;
         }
+        @keyframes drift { 0% { transform: translate(0, 0); } 100% { transform: translate(5%, 10%); } }
 
-        @keyframes drift {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(5%, 10%); }
+        /* Docs Modal Styles */
+        #docs-modal {
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
         }
+        .doc-section { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2rem; margin-bottom: 2rem; }
+        .doc-section:last-child { border-bottom: none; }
     </style>
 </head>
 
@@ -107,49 +115,47 @@
         <div class="blob-2"></div>
     </div>
 
-    <nav class="w-full max-w-[1600px] mx-auto p-4 md:p-6 lg:p-10 sticky top-0 z-50">
-        <div class="flex flex-wrap items-center justify-between p-5 glass-card border-emerald-500/10 gs-reveal-nav">
-            <div class="flex items-center gap-3">
+    <nav class="w-full max-w-[1600px] mx-auto p-4 md:p-6 lg:p-10 absolute top-0 left-0 right-0 z-50">
+        <div class="flex flex-wrap items-center justify-between p-5 glass-card border-emerald-500/10 relative">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
                 <img src="logo.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10">
-                <span class="text-xl md:text-2xl font-black tracking-tighter cursor-pointer" onclick="window.scrollTo(0,0)">EcoKnowledge</span>
+                <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-emerald-400 transition-colors">EcoKnowledge</span>
             </div>
 
-            <button id="menu-toggle" class="lg:hidden text-slate-400 p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
+            <button id="menu-toggle" class="lg:hidden text-slate-400 p-2 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
 
-            <div id="nav-menu" class="hidden lg:flex flex-col lg:flex-row w-full lg:w-auto gap-4 lg:gap-8 text-[10px] font-bold uppercase tracking-widest mt-4 lg:mt-0">
-                <a href="#overview" class="block py-2 text-slate-400 hover:text-white transition-colors">Our Mission</a>
-                <a href="simulator.html" class="block py-2 text-emerald-400 border-b-2 border-emerald-400 lg:border-none transition-colors">Simulation</a>
-                <a href="index_final.html" class="block py-2 text-slate-400 hover:text-white transition-colors">View AP EcoGrid Analysis</a>
+            <div id="nav-menu" class="hidden absolute top-full left-0 right-0 mt-4 p-6 glass-card lg:static lg:mt-0 lg:p-0 lg:bg-transparent lg:border-none lg:backdrop-blur-none lg:shadow-none lg:flex flex-col lg:flex-row w-full lg:w-auto gap-6 lg:gap-8 text-[10px] sm:text-xs font-bold uppercase tracking-widest z-50">
+                <a href="#overview" class="block text-slate-400 hover:text-white transition-colors">Our Mission</a>
+                <a href="simulator.html" class="block text-slate-400 hover:text-emerald-400 transition-colors">Simulation</a>
+                <a href="index_final.html" class="block text-slate-400 hover:text-blue-400 transition-colors">View AP EcoGrid Analysis</a>
             </div>
         </div>
     </nav>
 
-    <section class="relative min-h-[85vh] flex items-center py-12 px-6 overflow-hidden max-w-[1600px] mx-auto">
-        <div class="w-full grid lg:grid-cols-2 gap-12 items-center">
+    <section class="relative min-h-screen pt-32 pb-16 px-4 sm:px-6 flex items-center justify-center overflow-hidden">
+        <div class="max-w-7xl w-full mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
             
-            <div class="z-10 gs-reveal-hero">
-                <div class="inline-block px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold tracking-widest uppercase mb-6">
-                    Andhra Pradesh EcoGrid
+            <div class="z-20 text-center lg:text-left gs-reveal-hero">
+                <div class="inline-block px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-6">
+                    Project Agenda
                 </div>
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.1]">
+                <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.05]">
                     PREDICTING <br> 
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">FUTURE</span> <br> 
                     ECOLOGY.
                 </h1>
-                <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-lg leading-relaxed font-light">
+                <p class="text-base sm:text-lg md:text-xl text-slate-400 mb-10 max-w-lg mx-auto lg:mx-0 font-light leading-relaxed">
                     Harnessing advanced Machine Learning to simulate and analyze urban environmental health. Join us in building a sustainable tomorrow.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="simulator.html" class="bg-emerald-500 text-black font-black px-8 py-4 rounded-xl hover:bg-emerald-400 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="simulator.html" class="bg-emerald-500 text-black font-black px-6 sm:px-8 py-4 rounded-xl hover:bg-emerald-400 hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-emerald-500/20 text-center flex items-center justify-center gap-2 text-sm sm:text-base">
                         Go to Dashboard
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </a>
-                    <a href="index_final.html" class="border border-white/10 bg-white/5 backdrop-blur-md text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all text-center">
-                        Explore Map Data
+                    <a href="#overview" class="border border-white/10 bg-white/5 backdrop-blur-md text-white font-bold px-6 sm:px-8 py-4 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all text-center text-sm sm:text-base">
+                        Learn More
                     </a>
                 </div>
             </div>
@@ -167,16 +173,16 @@
                     <div class="text-emerald-400 text-4xl font-black mb-2">PM 2.5</div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Real-time Tracking</div>
                     <div class="mt-4 flex gap-1.5 items-end h-16">
-                        <div class="w-full bg-emerald-500/30 h-[40%] rounded-t-sm"></div>
-                        <div class="w-full bg-emerald-500/50 h-[60%] rounded-t-sm"></div>
-                        <div class="w-full bg-emerald-500/80 h-[100%] rounded-t-sm"></div>
-                        <div class="w-full bg-emerald-500/60 h-[50%] rounded-t-sm"></div>
+                        <div class="w-full bg-emerald-500/40 h-[30%] rounded-t-sm"></div>
+                        <div class="w-full bg-emerald-500/60 h-[60%] rounded-t-sm"></div>
+                        <div class="w-full bg-emerald-500 h-[100%] rounded-t-sm"></div>
+                        <div class="w-full bg-emerald-500/80 h-[50%] rounded-t-sm"></div>
                     </div>
                 </div>
 
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 glass-card p-6 floating-element shadow-2xl flex flex-col items-center justify-center" style="animation-delay: -4s;">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 glass-card p-6 floating-element shadow-2xl flex flex-col items-center" style="animation-delay: -4s;">
                     <div class="text-emerald-400 text-4xl font-black mb-2">45%</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 text-center">Greenness Index</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Greenness Index</div>
                     <div class="mt-4 relative w-20 h-20 mx-auto">
                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                             <path class="text-white/5" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -188,109 +194,196 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <section id="overview" class="py-24 px-6 bg-white/[0.02] border-y border-white/5">
+    <section id="overview" class="py-20 md:py-24 px-4 sm:px-6 bg-white/[0.02] border-y border-white/5">
         <div class="max-w-[1400px] mx-auto">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="gs-scroll-reveal">
-                    <h2 class="text-3xl md:text-5xl font-black mb-8 tracking-tight">Our Mission</h2>
-                    <p class="text-slate-400 text-lg leading-relaxed mb-10 font-light text-justify">
-                        The Ecology Project is an ambitious initiative designed to bridge the gap between urban development and environmental preservation. By utilizing state-of-the-art Random Forest and XGBoost models, we analyze critical factors like Greenness, Urban Density, and Air Quality (PM 2.5) to provide actionable insights for city planners and environmentalists.
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div class="gs-scroll-card">
+                    <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight">Our Mission</h2>
+                    <p class="text-slate-400 text-base md:text-lg leading-relaxed mb-8 font-light text-justify">
+                        The Ecology Project is an ambitious initiative designed to bridge the gap between urban development and environmental preservation. By utilizing state-of-the-art Random Forest and XGBoost models, we analyze critical factors like Greenness, Urban Density, and Air Quality (PM 2.5) to provide actionable insights for city planners and environmentalists across the AP Grid.
                     </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                        <div class="p-5 glass-card border-l-4 border-l-emerald-500">
-                            <div class="font-black text-white text-lg mb-2 tracking-wide">Data Driven</div>
-                            <div class="text-sm text-slate-400 leading-relaxed">Analyzing millions of geo-spatial data points across urban grids.</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="p-5 glass-card border-l-4 border-l-emerald-500 bg-emerald-500/5">
+                            <div class="font-black text-white mb-1">Data Driven</div>
+                            <div class="text-sm text-slate-400 leading-relaxed">Analyzing millions of data points across 1km urban grids.</div>
                         </div>
-                        <div class="p-5 glass-card border-l-4 border-l-emerald-500">
-                            <div class="font-black text-white text-lg mb-2 tracking-wide">AI Powered</div>
+                        <div class="p-5 glass-card border-l-4 border-l-emerald-500 bg-emerald-500/5">
+                            <div class="font-black text-white mb-1">AI Powered</div>
                             <div class="text-sm text-slate-400 leading-relaxed">Predictive modeling for future environmental scenarios.</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="glass-card p-8 lg:p-12 gs-scroll-reveal">
-                    <img src="assets/summary.jpg" class="w-full rounded-xl mb-8 shadow-2xl opacity-90">
-                    <h3 class="text-emerald-400 font-bold uppercase tracking-widest text-[11px] mb-3">Feature Importance</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Our model identifies Greenness and PM 2.5 as the most significant predictors of overall urban health and sustainability.</p>
+                <div class="glass-card p-6 md:p-8 lg:p-10 gs-scroll-card">
+                    <img src="assets/summary.jpg" class="w-full rounded-xl mb-6 shadow-2xl opacity-90 hover:opacity-100 transition-opacity">
+                    <h3 class="text-emerald-400 font-bold uppercase tracking-widest text-[11px] mb-2">Feature Importance</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Our global SHAP analysis identifies <strong class="text-white">Greenness</strong> and <strong class="text-white">PM 2.5</strong> as the most significant predictors of urban health.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-24 px-6 relative overflow-hidden">
-        <div class="max-w-[1400px] mx-auto relative z-10 gs-scroll-reveal">
-            <div class="carousel-container shadow-2xl border border-white/10 bg-black">
+    <section class="py-20 md:py-24 px-4 sm:px-6 relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#05070a] via-emerald-900/10 to-[#05070a]"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto relative z-10 gs-scroll-card">
+            <div class="carousel-container">
                 
-                <div class="carousel-slide active" style="background-image: url('assets/carousel/forest1.jpg');">
+                <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop'); background-color: #0f172a;">
                     <div class="carousel-overlay">
-                        <div class="carousel-text transform translate-y-0 transition-transform duration-700">
-                            <h2 class="text-4xl md:text-5xl font-black text-white mb-4 drop-shadow-lg tracking-tight">Preserving Biodiversity</h2>
-                            <p class="text-slate-300 max-w-2xl text-lg font-light leading-relaxed drop-shadow-md">Forests are the lungs of our planet. Our models help identify areas where reforestation can have the maximum impact on air quality.</p>
+                        <div class="carousel-text">
+                            <h2 class="text-3xl md:text-5xl font-black text-white mb-3 md:mb-4 drop-shadow-lg tracking-tight">Preserving Biodiversity</h2>
+                            <p class="text-slate-300 max-w-2xl text-base md:text-lg font-light leading-relaxed drop-shadow-md">Forests are the lungs of our planet. Our models help identify areas where reforestation can have the maximum impact on air quality.</p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="carousel-slide" style="background-image: url('assets/carousel/sustainable_city.jpg');">
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=2555&auto=format&fit=crop'); background-color: #1e293b;">
                     <div class="carousel-overlay">
-                        <div class="carousel-text transform translate-y-8 opacity-0 transition-all duration-700">
-                            <h2 class="text-4xl md:text-5xl font-black text-white mb-4 drop-shadow-lg tracking-tight">Sustainable Urbanism</h2>
-                            <p class="text-slate-300 max-w-2xl text-lg font-light leading-relaxed drop-shadow-md">Integrating nature into our cities isn't just a luxury—it's a necessity for a healthy future.</p>
+                        <div class="carousel-text">
+                            <h2 class="text-3xl md:text-5xl font-black text-white mb-3 md:mb-4 drop-shadow-lg tracking-tight">Sustainable Urbanism</h2>
+                            <p class="text-slate-300 max-w-2xl text-base md:text-lg font-light leading-relaxed drop-shadow-md">Integrating nature into our cities isn't just a luxury—it's a necessity for a healthy thermal baseline and future urban health.</p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="carousel-slide" style="background-image: url('assets/carousel/lake.jpg');">
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?q=80&w=2528&auto=format&fit=crop'); background-color: #020617;">
                     <div class="carousel-overlay">
-                        <div class="carousel-text transform translate-y-8 opacity-0 transition-all duration-700">
-                            <h2 class="text-4xl md:text-5xl font-black text-white mb-4 drop-shadow-lg tracking-tight">Water Security</h2>
-                            <p class="text-slate-300 max-w-2xl text-lg font-light leading-relaxed drop-shadow-md">Monitoring environmental health includes protecting our precious water resources from urban runoff and pollution.</p>
+                        <div class="carousel-text">
+                            <h2 class="text-3xl md:text-5xl font-black text-white mb-3 md:mb-4 drop-shadow-lg tracking-tight">Water Security</h2>
+                            <p class="text-slate-300 max-w-2xl text-base md:text-lg font-light leading-relaxed drop-shadow-md">Monitoring environmental health includes protecting our precious water resources from rapid urban runoff and industrial pollution.</p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="absolute bottom-8 right-8 flex gap-3 z-20">
-                    <button onclick="prevSlide()" class="w-12 h-12 rounded-full glass-card flex items-center justify-center hover:bg-emerald-500 hover:text-black transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                <div class="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex gap-2 md:gap-3 z-20">
+                    <button onclick="prevSlide()" class="w-10 h-10 md:w-12 md:h-12 rounded-full glass-card flex items-center justify-center hover:bg-emerald-500 hover:text-black transition-colors">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <button onclick="nextSlide()" class="w-12 h-12 rounded-full glass-card flex items-center justify-center hover:bg-emerald-500 hover:text-black transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                    <button onclick="nextSlide()" class="w-10 h-10 md:w-12 md:h-12 rounded-full glass-card flex items-center justify-center hover:bg-emerald-500 hover:text-black transition-colors">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="quotes" class="py-24 px-6 bg-emerald-500/5 border-y border-emerald-500/10">
-        <div class="max-w-4xl mx-auto text-center gs-scroll-reveal">
-            <div class="text-emerald-500 mb-8 flex justify-center">
-                <svg class="w-12 h-12 opacity-40" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9125 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C14.9125 8 14.017 7.10457 14.017 6V3L21.017 3V15C21.017 18.3137 18.3307 21 15.017 21H14.017ZM3.01709 21L3.01709 18C3.01709 16.8954 3.91252 16 5.01709 16H8.01709C8.56937 16 9.01709 15.5523 9.01709 15V9C9.01709 8.44772 8.56937 8 8.01709 8H5.01709C3.91252 8 3.01709 7.10457 3.01709 6V3L10.0171 3V15C10.0171 18.3137 7.33077 21 4.01709 21H3.01709Z"></path></svg>
+    <section id="quotes" class="py-20 md:py-24 px-4 sm:px-6 bg-emerald-500/5 border-y border-emerald-500/10">
+        <div class="max-w-4xl mx-auto text-center gs-scroll-card">
+            <div class="text-emerald-500 mb-6 md:mb-8 flex justify-center">
+                <svg class="w-10 h-10 md:w-12 md:h-12 opacity-30" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9125 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C14.9125 8 14.017 7.10457 14.017 6V3L21.017 3V15C21.017 18.3137 18.3307 21 15.017 21H14.017ZM3.01709 21L3.01709 18C3.01709 16.8954 3.91252 16 5.01709 16H8.01709C8.56937 16 9.01709 15.5523 9.01709 15V9C9.01709 8.44772 8.56937 8 8.01709 8H5.01709C3.91252 8 3.01709 7.10457 3.01709 6V3L10.0171 3V15C10.0171 18.3137 7.33077 21 4.01709 21H3.01709Z"></path></svg>
             </div>
-            <h2 id="quote-text" class="text-3xl md:text-4xl lg:text-5xl font-black italic mb-8 leading-tight text-white/90">
-                "The greatest threat to our planet is the belief that someone else will save it."
-            </h2>
-            <p id="quote-author" class="text-emerald-400 font-bold uppercase tracking-widest text-sm">— Robert Swan</p>
+            <div class="min-h-[160px] flex flex-col justify-center">
+                <h2 id="quote-text" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black italic mb-6 leading-tight text-white/90 drop-shadow-md px-4">
+                    "The greatest threat to our planet is the belief that someone else will save it."
+                </h2>
+                <p id="quote-author" class="text-emerald-400 font-bold uppercase tracking-widest text-xs md:text-sm">— Robert Swan</p>
+            </div>
         </div>
     </section>
 
-    <footer class="py-12 px-6">
-        <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+    <footer class="py-10 px-4 sm:px-6 bg-[#030508]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
             <div class="flex items-center gap-3">
-                <img src="logo.png" alt="Logo" class="w-6 h-6 opacity-50 grayscale">
+                <img src="logo.png" alt="Logo" class="w-6 h-6 opacity-40 grayscale">
                 <span class="text-lg font-black tracking-tighter text-slate-600">EcoKnowledge</span>
             </div>
-            <div class="text-slate-500 text-sm font-medium">
+            <div class="text-slate-500 text-xs font-medium uppercase tracking-wider">
                 © 2026 Ecology Project. Built for a sustainable future.
             </div>
             <div class="flex gap-6">
-                <a href="#" class="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors">GitHub</a>
-                <a href="#" class="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors">Documentation</a>
+                <a href="https://github.com/Codebank-Pranav-Tej-Ch-Network/Ecology-Project" target="_blank" rel="noopener noreferrer" class="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors">GitHub</a>
+                <a href="#" onclick="openDocs(event)" class="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-colors">Documentation</a>
             </div>
         </div>
     </footer>
+
+    <div id="docs-modal" class="fixed inset-0 z-[100] hidden opacity-0 bg-[#05070a]/90 flex justify-center items-start pt-10 pb-10 px-4 md:px-10">
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto glass-card p-8 md:p-12 relative" style="border: 1px solid rgba(52, 211, 153, 0.2);">
+            
+            <button onclick="closeDocs()" class="absolute top-6 right-6 md:top-8 md:right-8 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-emerald-500 hover:text-black transition-colors text-slate-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="pr-2 md:pr-4">
+                <h2 class="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">EcoKnowledge Documentation</h2>
+                <p class="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-10">Project Implementation Guide</p>
+
+                <div class="doc-section">
+                    <h3 class="text-xl font-bold text-white mb-4">1. Project Overview</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed text-justify">
+                        EcoKnowledge is an advanced Environmental Intelligence platform engineered to evaluate and predict the urban health of the Andhra Pradesh (AP) region. By dividing the state into precise 1km² geo-spatial grids, the platform utilizes Machine Learning to balance infrastructural growth with essential environmental preservation. 
+                    </p>
+                </div>
+
+                <div class="doc-section">
+                    <h3 class="text-xl font-bold text-white mb-4">2. Core Technologies</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4 text-justify">
+                        The backend prediction engine is powered by a robust hybrid model combining <strong class="text-white">Random Forest</strong> and <strong class="text-white">XGBoost</strong> algorithms. These models were trained on historical ecological datasets to output an accurate Urban Health Index (UHI) score ranging from 1 (Critical) to 5 (Healthy). 
+                    </p>
+                    <p class="text-slate-300 text-sm leading-relaxed text-justify">
+                        To ensure transparent AI decision-making, we integrated <strong class="text-emerald-400">SHAP (SHapley Additive exPlanations)</strong>. This allows users to view Global Weights (overall feature importance) and Local Decision Paths (waterfall breakdowns showing exactly how specific parameters influenced a unique grid's score).
+                    </p>
+                </div>
+
+                <div class="doc-section">
+                    <h3 class="text-xl font-bold text-white mb-6">3. Key Parameters</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                            <strong class="text-emerald-300 block mb-1">Greenness (%)</strong>
+                            <span class="text-xs text-slate-400">Percentage of area covered by active vegetation (NDVI). Crucial for carbon sequestration.</span>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                            <strong class="text-blue-300 block mb-1">Urban Density</strong>
+                            <span class="text-xs text-slate-400">Concentration of built infrastructural environments. High density negatively impacts health scores.</span>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                            <strong class="text-orange-300 block mb-1">UHI Effect (°C)</strong>
+                            <span class="text-xs text-slate-400">Urban Heat Island variation. Measures how much hotter the urban grid is compared to rural baselines.</span>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5">
+                            <strong class="text-purple-300 block mb-1">LSTVI Dynamics</strong>
+                            <span class="text-xs text-slate-400">Land Surface Temperature to Vegetation Index ratio. A key indicator of thermal stress.</span>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5 sm:col-span-2">
+                            <strong class="text-red-400 block mb-1">PM 2.5 Levels (µg/m³)</strong>
+                            <span class="text-xs text-slate-400">Fine particulate matter concentration. The primary metric for assessing immediate air quality threats.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h3 class="text-xl font-bold text-white mb-4">4. How to Use the Platform</h3>
+                    
+                    <h4 class="text-white font-bold text-sm mb-2 mt-6">A. The Environmental Simulator</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4 text-justify">
+                        Navigate to the <a href="simulator.html" class="text-emerald-400 hover:underline">Simulation Dashboard</a> to manually test hypotheses. Enter values for the 5 parameters and click "Analyze Environment". The ML API will process the data and return an Urban Health Score. The dashboard will instantly generate dynamic, actionable suggestions (e.g., policy changes or zoning restrictions) tailored to that specific score.
+                    </p>
+
+                    <h4 class="text-white font-bold text-sm mb-2 mt-6">B. The AP EcoGrid Analysis (Map)</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4 text-justify">
+                        Navigate to the <a href="index_final.html" class="text-emerald-400 hover:underline">Interactive Map</a> to explore geospatial data.
+                    </p>
+                    <ul class="list-disc pl-5 text-sm text-slate-300 space-y-2 mb-4">
+                        <li><strong>Colormap Tool:</strong> Use the top-right control panel to colorize the map based on specific variables (like PM 2.5 or Greenness).</li>
+                        <li><strong>Historical Data:</strong> Click on any highlighted 1km grid cell to open the Details Panel, featuring historical trend graphs (Summer vs Winter) for all metrics from 2000 to 2024.</li>
+                        <li><strong>Manual Geo-Analysis:</strong> Click anywhere <em>outside</em> the predefined grids to open the Urban Health Input Panel. This allows you to drop a custom pin, manually input surveyed data for that exact latitude/longitude, and generate a real-time health score widget for unmapped areas.</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center pt-8 mt-8 border-t border-white/10">
+                    <button onclick="closeDocs()" class="bg-emerald-500 text-black font-bold px-8 py-3 rounded-full hover:bg-emerald-400 transition-colors text-sm">
+                        Close Documentation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Mobile Menu Toggle
@@ -308,13 +401,12 @@
         // Initialize GSAP Plugins
         gsap.registerPlugin(ScrollTrigger);
 
-        // Entrance Animations
+        // Hero Entrance Animation
         const tl = gsap.timeline();
-        tl.fromTo(".gs-reveal-nav", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" })
-          .fromTo(".gs-reveal-hero", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out" }, "-=0.4");
+        tl.fromTo(".gs-reveal-hero", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out" });
 
-        // Scroll Animations
-        gsap.utils.toArray('.gs-scroll-reveal').forEach((elem) => {
+        // Scroll Animations for sections
+        gsap.utils.toArray('.gs-scroll-card').forEach((elem) => {
             gsap.fromTo(elem, 
                 { y: 50, opacity: 0 },
                 {
@@ -331,40 +423,41 @@
             );
         });
 
+        // Documentation Modal Logic
+        const docsModal = document.getElementById('docs-modal');
+        function openDocs(e) {
+            e.preventDefault();
+            docsModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            gsap.to(docsModal, { opacity: 1, duration: 0.4, ease: "power2.out" });
+        }
+        function closeDocs() {
+            gsap.to(docsModal, { opacity: 0, duration: 0.3, ease: "power2.in", onComplete: () => {
+                docsModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Restore background scrolling
+            }});
+        }
+
         // Carousel Logic
         let currentSlide = 0;
         const slides = document.querySelectorAll('.carousel-slide');
+        let slideInterval;
         
         function showSlide(n) {
-            // Animate text out
-            const oldText = slides[currentSlide].querySelector('.carousel-text');
-            if(oldText) {
-                oldText.style.opacity = '0';
-                oldText.style.transform = 'translateY(32px)';
-            }
-            
             slides[currentSlide].classList.remove('active');
-            
-            // Calc new slide
             currentSlide = (n + slides.length) % slides.length;
-            
             slides[currentSlide].classList.add('active');
-            
-            // Animate text in
-            const newText = slides[currentSlide].querySelector('.carousel-text');
-            if(newText) {
-                setTimeout(() => {
-                    newText.style.opacity = '1';
-                    newText.style.transform = 'translateY(0)';
-                }, 300); // Wait for slide transition to start
-            }
+            resetInterval();
         }
 
         function nextSlide() { showSlide(currentSlide + 1); }
         function prevSlide() { showSlide(currentSlide - 1); }
 
-        // Slowed down to 5 seconds for better readability
-        setInterval(nextSlide, 5000);
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 5000); 
+        }
+        resetInterval();
 
         // Quotes Logic
         const quotes = [
