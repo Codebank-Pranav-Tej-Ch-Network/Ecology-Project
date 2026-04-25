@@ -1,24 +1,3 @@
-None selected
-
-Skip to content
-Using Indian Institute of Technology Tirupati Mail with screen readers
-
-1 of 5,621
-(no subject)
-Inbox
-ME24B006 BHEEMATHATI ANANYA <me24b006@iittp.ac.in>
-Attachments
-3:41 PM (19 minutes ago)
-to me
-
-Be careful with this message.
-This message has one or more attachments that Gmail can't verify and that might be harmful. Don't download the attachments unless you trust the sender and the message.
-
-Report spamLooks safe
-
- One attachment
-  •  Scanned by Gmail
-Downloading this attachment is disabled. If you want to download it and you trust this message, click "Looks safe" in the banner above.
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,6 +12,7 @@ Downloading this attachment is disabled. If you want to download it and you trus
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico?v=2">
 
     <style>
         /* ── Rama's original variables ── */
@@ -92,7 +72,7 @@ Downloading this attachment is disabled. If you want to download it and you trus
             border: 1px solid var(--border-color);
             z-index: 1000; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
             max-width: min(520px, calc(100vw - 48px));
-            transition: all 0.3s ease;
+            cursor: grab;
         }
         #colormap-control.hidden { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         #colormap-legend {
@@ -119,53 +99,29 @@ Downloading this attachment is disabled. If you want to download it and you trus
 
         /* ── Map + weather rail ── */
         #map-weather-rail {
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            pointer-events: none;
+            position: fixed; inset: 0; z-index: 10; display: flex;
+            flex-direction: column; pointer-events: none;
         }
         #map-weather-rail > #map {
-            pointer-events: auto;
-            flex: 1;
-            min-height: 0;
-            width: 100%;
-            position: relative;
-            z-index: 1;
+            pointer-events: auto; flex: 1; min-height: 0; width: 100%;
+            position: relative; z-index: 1;
             transition: width 0.45s ease, height 0.45s ease, box-shadow 0.45s ease, border-radius 0.45s ease;
         }
         #map.minimized {
-            position: fixed;
-            top: auto; left: auto; bottom: 30px; right: 30px;
+            position: fixed; top: auto; left: auto; bottom: 30px; right: 30px;
             width: 360px; height: 360px; z-index: 1000;
-            border: 4px solid var(--map-border);
-            border-radius: 16px; box-shadow: var(--shadow-lg);
+            border: 4px solid var(--map-border); border-radius: 16px; box-shadow: var(--shadow-lg);
         }
         body.details-open #map-weather-rail {
-            inset: auto;
-            top: 88px;
-            left: 32px;
-            width: 360px;
-            height: auto;
-            bottom: auto;
-            right: auto;
-            z-index: 1100;
-            gap: 12px;
-            pointer-events: auto;
+            inset: auto; top: 88px; left: 32px; width: 360px; height: auto;
+            bottom: auto; right: auto; z-index: 1100; gap: 12px; pointer-events: auto;
         }
         body.details-open #map-weather-rail > #map {
-            flex: 0 0 360px;
-            width: 360px;
-            height: 360px;
-            border: 4px solid var(--map-border);
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-            overflow: hidden;
+            flex: 0 0 360px; width: 360px; height: 360px;
+            border: 4px solid var(--map-border); border-radius: 16px; box-shadow: var(--shadow-lg); overflow: hidden;
         }
         body.details-open #map-weather-rail > #map.minimized {
-            position: relative;
-            top: auto; left: auto; bottom: auto; right: auto;
+            position: relative; top: auto; left: auto; bottom: auto; right: auto;
         }
         body.dark-theme .leaflet-layer,
         body.dark-theme .leaflet-control-zoom-in,
@@ -177,17 +133,17 @@ Downloading this attachment is disabled. If you want to download it and you trus
         /* ── Rama's top bar ── */
         #top-bar {
             position: fixed; top: 24px; left: 50%;
-            transform: none;
+            transform: translateX(-50%);
             background: var(--bg-card);
             padding: 12px 24px; border-radius: 50px;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
             display: flex; align-items: center; gap: 24px;
-            z-index: 1000; transition: all 0.3s ease;
+            z-index: 1000;
+            cursor: grab;
         }
         #top-bar.hidden {
             opacity: 0; pointer-events: none;
-            transform: translate(-50%, -20px);
         }
         .app-title {
             font-weight: 700; font-size: 16px;
@@ -215,7 +171,7 @@ Downloading this attachment is disabled. If you want to download it and you trus
             border-radius: 50px; box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
             z-index: 1000; display: flex; gap: 16px; align-items: center;
-            transition: all 0.3s ease;
+            cursor: grab;
         }
         #grid-selector.hidden { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .dropdown-group { display: flex; align-items: center; gap: 8px; }
@@ -237,150 +193,84 @@ Downloading this attachment is disabled. If you want to download it and you trus
 
         /* ── Rama's details panel ── */
         #details-panel {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background-color: var(--bg-panel);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            z-index: 50; overflow-y: auto; display: none;
-            padding: 40px;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 50; overflow-y: auto; display: none; padding: 40px;
             opacity: 0; transition: opacity 0.4s ease;
         }
         #details-panel.active { display: block; opacity: 1; }
-        body.details-open #details-panel.active {
-            padding: 40px 40px 40px 432px;
-        }
+        body.details-open #details-panel.active { padding: 40px 40px 40px 432px; }
         .details-content { max-width: 1400px; margin: 0 auto; }
         .details-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 30px; background: var(--bg-card);
             padding: 24px 32px; border-radius: 16px;
             box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
         }
-        .details-title h1 {
-            font-size: 28px; color: var(--text-primary);
-            margin-bottom: 6px; font-weight: 700; letter-spacing: -0.5px;
-        }
+        .details-title h1 { font-size: 28px; color: var(--text-primary); margin-bottom: 6px; font-weight: 700; letter-spacing: -0.5px; }
         .details-title p { color: var(--text-secondary); font-size: 15px; }
         .back-button {
             background-color: var(--button-bg); color: var(--button-text);
             border: none; padding: 14px 28px; border-radius: 10px;
             cursor: pointer; font-size: 15px; font-weight: 600;
-            transition: background-color 0.2s, transform 0.1s;
-            display: flex; align-items: center; gap: 8px;
-            box-shadow: var(--shadow-sm);
+            transition: background-color 0.2s, transform 0.1s; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-sm);
         }
         .back-button:hover { background-color: var(--button-hover); transform: translateY(-1px); }
-        .details-dropdowns {
-            display: flex; gap: 16px; align-items: center;
-            margin: 0 20px 0 auto;
-        }
+        .details-dropdowns { display: flex; gap: 16px; align-items: center; margin: 0 20px 0 auto; }
         .properties-container {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 24px; background: var(--bg-card); padding: 32px;
-            border-radius: 16px; box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color); margin-bottom: 40px;
-            transition: all 0.3s ease;
+            border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 40px;
         }
         .property-card { display: flex; flex-direction: column; border-left: 4px solid var(--accent-color); padding-left: 16px; }
         .property-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; font-weight: 600; }
         .property-value { font-size: 20px; font-weight: 700; color: var(--text-primary); word-break: break-word; }
         .charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 60px; }
-        .chart-card {
-            background: var(--bg-card); border-radius: 16px; padding: 32px;
-            box-shadow: var(--shadow-md); border: 1px solid var(--border-color);
-            height: 460px; display: flex; flex-direction: column; transition: all 0.3s ease;
-        }
+        .chart-card { background: var(--bg-card); border-radius: 16px; padding: 32px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); height: 460px; display: flex; flex-direction: column; }
         .chart-card.full-width { grid-column: 1 / -1; height: 520px; }
         .chart-header { margin-bottom: 24px; text-align: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
         .chart-header h3 { font-size: 18px; color: var(--text-primary); font-weight: 700; }
         .chart-canvas-wrapper { flex: 1; position: relative; width: 100%; }
-        .no-data {
-            grid-column: 1 / -1; background: rgba(239,68,68,0.1);
-            color: #ef4444; padding: 32px; border-radius: 16px;
-            text-align: center; font-weight: 600; font-size: 18px;
-            border: 1px solid rgba(239,68,68,0.2);
-        }
+        .no-data { grid-column: 1 / -1; background: rgba(239,68,68,0.1); color: #ef4444; padding: 32px; border-radius: 16px; text-align: center; font-weight: 600; font-size: 18px; border: 1px solid rgba(239,68,68,0.2); }
 
-        /* ── Loading indicator (Rama's) ── */
+        /* ── Loading indicator ── */
         .loading-indicator {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: var(--bg-main); color: var(--text-primary);
-            z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; visibility: hidden;
-            transition: opacity 0.6s ease-out, visibility 0.6s;
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 0.6s ease-out, visibility 0.6s;
         }
         .loading-indicator.active { opacity: 1; pointer-events: all; visibility: visible; }
-        .map-loader-container {
-            position: relative; width: 120px; height: 120px;
-            margin-bottom: 30px; display: flex; align-items: center; justify-content: center;
-        }
-        .map-icon {
-            width: 100%; height: 100%;
-            stroke-dasharray: 200; stroke-dashoffset: 200;
-            animation: drawMap 2.5s cubic-bezier(0.4,0,0.2,1) infinite alternate;
-        }
-        .pin-icon {
-            position: absolute; top: 20%; left: 50%;
-            transform: translateX(-50%) translateY(-40px); opacity: 0;
-            animation: dropPin 2.5s cubic-bezier(0.34,1.56,0.64,1) infinite;
-            animation-delay: 1.2s;
-        }
+        .map-loader-container { position: relative; width: 120px; height: 120px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; }
+        .map-icon { width: 100%; height: 100%; stroke-dasharray: 200; stroke-dashoffset: 200; animation: drawMap 2.5s cubic-bezier(0.4,0,0.2,1) infinite alternate; }
+        .pin-icon { position: absolute; top: 20%; left: 50%; transform: translateX(-50%) translateY(-40px); opacity: 0; animation: dropPin 2.5s cubic-bezier(0.34,1.56,0.64,1) infinite; animation-delay: 1.2s; }
         .loading-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.5px; animation: pulseText 2s infinite ease-in-out; }
         .loading-text { color: var(--text-secondary); font-size: 16px; }
         @keyframes drawMap { 0% { stroke-dashoffset: 200; fill: transparent; transform: scale(0.95); opacity: 0.3; } 45% { stroke-dashoffset: 0; fill: transparent; transform: scale(1); opacity: 1; } 100% { stroke-dashoffset: 0; fill: rgba(59,130,246,0.15); transform: scale(1.05); opacity: 1; } }
         @keyframes dropPin { 0%, 20% { transform: translateX(-50%) translateY(-40px); opacity: 0; } 40%, 60% { transform: translateX(-50%) translateY(0); opacity: 1; } 80%, 100% { transform: translateX(-50%) translateY(0); opacity: 0; } }
         @keyframes pulseText { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
 
-        /* ══════════════════════════════════════════════
-           YOUR ADDITION — Urban Health Input Panel
-           (only shows for outside-grid clicks)
-        ══════════════════════════════════════════════ */
+        /* ── Urban Health Input Panel ── */
         #urban-input-panel {
             position: fixed; top: 0; right: 0; width: 400px; height: 100vh;
             background: var(--bg-card); border-left: 1px solid var(--border-color);
-            z-index: 500; display: none; flex-direction: column;
-            box-shadow: var(--shadow-lg); transition: all 0.3s ease;
+            z-index: 500; display: none; flex-direction: column; box-shadow: var(--shadow-lg); transition: all 0.3s ease;
         }
         #urban-input-panel.open { display: flex; }
         .uip-header { padding: 24px 24px 20px; border-bottom: 1px solid var(--border-color); }
         .uip-header h2 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
         .uip-header p { font-size: 13px; color: var(--text-secondary); }
-        .uip-close {
-            background: transparent; border: none; color: var(--text-secondary);
-            cursor: pointer; padding: 6px; border-radius: 6px; float: right; margin-top: -4px;
-        }
+        .uip-close { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 6px; border-radius: 6px; float: right; margin-top: -4px; }
         .uip-close:hover { color: var(--text-primary); }
-        .uip-coord {
-            display: inline-block; background: var(--bg-main);
-            border: 1px solid var(--border-color); border-radius: 6px;
-            padding: 4px 10px; font-size: 11px; font-family: monospace;
-            color: var(--text-secondary); margin-top: 10px;
-        }
+        .uip-coord { display: inline-block; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-family: monospace; color: var(--text-secondary); margin-top: 10px; }
         .uip-body { padding: 20px 24px; flex: 1; overflow-y: auto; }
         .uip-field { margin-bottom: 15px; }
-        .uip-field label {
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 11px; font-weight: 600; color: var(--text-secondary);
-            text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px;
-        }
+        .uip-field label { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
         .uip-field label em { font-style: normal; font-weight: 400; text-transform: none; }
-        .uip-field input {
-            width: 100%; padding: 10px 14px; border-radius: 10px;
-            border: 1.5px solid var(--border-color); background: var(--bg-main);
-            color: var(--text-primary); font-size: 14px;
-            font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s;
-        }
+        .uip-field input { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
         .uip-field input:focus { border-color: var(--accent-color); }
         .uip-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border-color); }
-        .uip-btn {
-            width: 100%; padding: 13px; border-radius: 10px;
-            background: var(--button-bg); color: var(--button-text);
-            border: none; font-size: 15px; font-weight: 700;
-            font-family: 'Inter', sans-serif; cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
+        .uip-btn { width: 100%; padding: 13px; border-radius: 10px; background: var(--button-bg); color: var(--button-text); border: none; font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s, transform 0.1s; }
         .uip-btn:hover { background: var(--button-hover); transform: translateY(-1px); }
         .uip-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .uip-err { font-size: 12px; color: #ef4444; margin-top: 8px; display: none; }
@@ -389,18 +279,12 @@ Downloading this attachment is disabled. If you want to download it and you trus
         /* ── Urban Health Score Results Panel ── */
         #urban-results-panel {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: var(--bg-panel);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            z-index: 50; overflow-y: auto; display: none;
-            padding: 40px; padding-right: 420px;
+            background-color: var(--bg-panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 50; overflow-y: auto; display: none; padding: 40px; padding-right: 420px;
             opacity: 0; transition: opacity 0.4s ease;
         }
         #urban-results-panel.active { display: block; opacity: 1; }
-        .score-hero {
-            background: var(--bg-card); border-radius: 16px; padding: 32px;
-            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
-            margin-bottom: 28px; display: flex; align-items: center; gap: 40px;
-        }
+        .score-hero { background: var(--bg-card); border-radius: 16px; padding: 32px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 28px; display: flex; align-items: center; gap: 40px; }
         .score-num { font-size: 72px; font-weight: 900; line-height: 1; transition: color 0.4s; flex-shrink: 0; }
         .score-info { flex: 1; }
         .score-cat { font-size: 32px; font-weight: 700; margin-bottom: 6px; transition: color 0.4s; }
@@ -409,117 +293,41 @@ Downloading this attachment is disabled. If you want to download it and you trus
         .meter-inner { height: 100%; border-radius: 99px; width: 0%; transition: width 1.2s cubic-bezier(0.4,0,0.2,1), background 0.4s; }
         .meter-labels { display: flex; justify-content: space-between; margin-top: 6px; }
         .meter-labels span { font-size: 11px; color: var(--text-secondary); }
-        .urban-params-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px; background: var(--bg-card); padding: 28px;
-            border-radius: 16px; border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm); margin-bottom: 28px;
-        }
+        .urban-params-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; background: var(--bg-card); padding: 28px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 28px; }
         .urban-param-card { border-left: 4px solid var(--accent-color); padding-left: 14px; }
         .urban-param-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; font-weight: 600; }
         .urban-param-value { font-size: 22px; font-weight: 700; color: var(--text-primary); }
         .urban-param-unit { font-size: 13px; font-weight: 400; color: var(--text-secondary); }
         .urban-charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 60px; }
-        .urban-chart-card {
-            background: var(--bg-card); border-radius: 16px; padding: 28px;
-            box-shadow: var(--shadow-md); border: 1px solid var(--border-color);
-            height: 420px; display: flex; flex-direction: column;
-        }
+        .urban-chart-card { background: var(--bg-card); border-radius: 16px; padding: 28px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); height: 420px; display: flex; flex-direction: column; }
         .urban-chart-card.full-width { grid-column: 1 / -1; height: 360px; }
         .urban-chart-header { margin-bottom: 20px; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); }
         .urban-chart-header h3 { font-size: 17px; color: var(--text-primary); font-weight: 700; }
         .urban-chart-canvas { flex: 1; position: relative; width: 100%; }
+        
         /* ── Grid Tooltip on Hover ── */
-        .grid-tooltip {
-            background: rgba(15, 23, 42, 0.92) !important;
-            color: #ffffff !important;
-            border: none !important;
-            border-radius: 8px !important;
-            font-family: 'Inter', sans-serif !important;
-            font-size: 13px !important;
-            padding: 8px 12px !important;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.4) !important;
-            pointer-events: none !important;
-            line-height: 1.6 !important;
-        }
+        .grid-tooltip { background: rgba(15, 23, 42, 0.92) !important; color: #ffffff !important; border: none !important; border-radius: 8px !important; font-family: 'Inter', sans-serif !important; font-size: 13px !important; padding: 8px 12px !important; box-shadow: 0 4px 14px rgba(0,0,0,0.4) !important; pointer-events: none !important; line-height: 1.6 !important; }
         .grid-tooltip::before { display: none !important; }
         .grid-tooltip b { font-size: 14px; }
         .grid-tooltip span { color: #94a3b8; font-size: 11px; }
 
-        /* ── Weather (stacked under map in details view; Open-Meteo) ── */
-        #weather-panel {
-            display: none;
-            flex-direction: column;
-            width: 360px;
-            height: 360px;
-            flex: 0 0 360px;
-            box-sizing: border-box;
-            padding: 16px 18px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: var(--shadow-md);
-            pointer-events: auto;
-        }
-        body.details-open #weather-panel {
-            display: flex;
-        }
-        .weather-top {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        #w-icon {
-            font-size: 40px;
-            line-height: 1;
-            flex-shrink: 0;
-        }
+        /* ── Weather (stacked under map in details view) ── */
+        #weather-panel { display: none; flex-direction: column; width: 360px; height: 360px; flex: 0 0 360px; box-sizing: border-box; padding: 16px 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow-md); pointer-events: auto; }
+        body.details-open #weather-panel { display: flex; }
+        .weather-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        #w-icon { font-size: 40px; line-height: 1; flex-shrink: 0; }
         .weather-titles { min-width: 0; flex: 1; }
-        #w-place {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.25;
-            word-break: break-word;
-        }
-        #w-city {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        #w-coords {
-            font-size: 11px;
-            font-family: ui-monospace, monospace;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            line-height: 1.35;
-        }
-        #w-temp {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--accent-color);
-            line-height: 1.1;
-            margin-top: auto;
-            margin-bottom: 8px;
-        }
-        #w-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-        #colormap-legend.legend-muted {
-            opacity: 0.45;
-            pointer-events: none;
-        }
-
+        #w-place { font-size: 15px; font-weight: 700; color: var(--text-primary); line-height: 1.25; word-break: break-word; }
+        #w-city { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-top: 4px; }
+        #w-coords { font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-secondary); margin-top: 4px; line-height: 1.35; }
+        #w-temp { font-size: 36px; font-weight: 700; color: var(--accent-color); line-height: 1.1; margin-top: auto; margin-bottom: 8px; }
+        #w-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+        #colormap-legend.legend-muted { opacity: 0.45; pointer-events: none; }
     </style>
 </head>
 
 <body>
 
-    <!-- ── Rama's Grid Selector ── -->
     <div id="grid-selector">
         <div class="dropdown-group">
             <span class="dropdown-label">City</span>
@@ -535,10 +343,9 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </div>
     </div>
 
-    <!-- ── Rama's Top Bar ── -->
     <div id="top-bar">
         <div class="app-title">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+            <img src="logo.png" alt="EcoKnowledge Logo" style="width: 24px; height: 24px; border-radius: 4px; pointer-events: none;">
             AP EcoGrid Analysis
         </div>
         <button id="theme-toggle" class="icon-button" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
@@ -547,7 +354,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </button>
     </div>
 
-    <!-- ── Colormap Control ── -->
     <div id="colormap-control">
         <div class="dropdown-group">
             <span class="dropdown-label">🎨 Color By</span>
@@ -570,7 +376,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </div>
     </div>
 
-    <!-- ── Colormap Legend ── -->
     <div id="colormap-legend">
         <div class="legend-title" id="legend-title">Urban Health Index</div>
         <div class="legend-gradient" id="legend-gradient"></div>
@@ -580,7 +385,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </div>
     </div>
 
-    <!-- ── Map + weather (rail stacks in details view) ── -->
     <div id="map-weather-rail">
         <div id="map"></div>
         <aside id="weather-panel" aria-live="polite">
@@ -597,7 +401,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </aside>
     </div>
 
-    <!-- ── Rama's Details Panel (for grid clicks) ── -->
     <div id="details-panel">
         <div class="details-content">
             <div class="details-header">
@@ -626,9 +429,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════
-         YOUR ADDITION — Input Panel (outside-grid clicks)
-    ══════════════════════════════════════════════ -->
     <div id="urban-input-panel">
         <div class="uip-header">
             <button class="uip-close" onclick="closeUrbanInput()">
@@ -652,7 +452,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </div>
     </div>
 
-    <!-- ── Urban Health Results Panel ── -->
     <div id="urban-results-panel">
         <div class="details-content">
             <div class="details-header">
@@ -678,7 +477,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
         </div>
     </div>
 
-    <!-- ── Loading Indicator (Rama's) ── -->
     <div class="loading-indicator active" id="main-loader">
         <div class="map-loader-container">
             <svg class="map-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -699,35 +497,49 @@ Downloading this attachment is disabled. If you want to download it and you trus
 
     <script>
         /* ════════════════════════════════════════════
-           RAMA'S ORIGINAL CODE — untouched
+           RAMA'S ORIGINAL CODE — Drag Logic Bulletproofed
         ════════════════════════════════════════════ */
         function makeDraggable(el) {
-    let isDragging = false, offsetX, offsetY;
+            let isDragging = false, offsetX, offsetY;
 
-    el.addEventListener("mousedown", (e) => {
-        isDragging = true;
+            el.addEventListener("mousedown", (e) => {
+                // Prevent drag if clicking inside an interactive element
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT' || e.target.closest('button')) return;
 
-        // remove transform (important for centered elements)
-        el.style.transform = "none";
+                isDragging = true;
+                const rect = el.getBoundingClientRect();
+                
+                // Lock exact current width to prevent UI shifts when breaking constraints
+                el.style.width = rect.width + 'px';
+                
+                // Clear centering logic seamlessly
+                el.style.transform = "none";
+                el.style.margin = "0";
+                
+                // Re-apply absolute positioning exactly where it currently sits
+                el.style.left = rect.left + "px";
+                el.style.top = rect.top + "px";
 
-        offsetX = e.clientX - el.offsetLeft;
-        offsetY = e.clientY - el.offsetTop;
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
 
-        document.body.style.userSelect = "none";
-    });
+                document.body.style.userSelect = "none";
+                el.style.cursor = "grabbing";
+            });
 
-    document.addEventListener("mousemove", (e) => {
-        if (!isDragging) return;
+            document.addEventListener("mousemove", (e) => {
+                if (!isDragging) return;
+                el.style.left = (e.clientX - offsetX) + "px";
+                el.style.top = (e.clientY - offsetY) + "px";
+            });
 
-        el.style.left = (e.clientX - offsetX) + "px";
-        el.style.top = (e.clientY - offsetY) + "px";
-    });
+            document.addEventListener("mouseup", () => {
+                isDragging = false;
+                document.body.style.userSelect = "auto";
+                el.style.cursor = "grab";
+            });
+        }
 
-    document.addEventListener("mouseup", () => {
-        isDragging = false;
-        document.body.style.userSelect = "auto";
-    });
-}
         function initTheme() {
             const savedTheme = localStorage.getItem('eco-theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -759,7 +571,7 @@ Downloading this attachment is disabled. If you want to download it and you trus
 
         let map, geoJsonLayer, ecologyData = {}, chartInstances = [];
         let cityGrids = {}, featureLayerMap = {};
-        let gridClicked = false; // flag to detect outside-grid clicks
+        let gridClicked = false; 
 
         function initMap() {
             map = L.map('map').setView([16.5, 80.6], 7);
@@ -767,7 +579,6 @@ Downloading this attachment is disabled. If you want to download it and you trus
                 attribution: '© OpenStreetMap contributors', maxZoom: 19, minZoom: 5
             }).addTo(map);
 
-            // Outside-grid click → open urban health input panel
             map.on('click', function(e) {
                 if (gridClicked) { gridClicked = false; return; }
                 openUrbanInput(e.latlng);
@@ -775,7 +586,7 @@ Downloading this attachment is disabled. If you want to download it and you trus
         }
 
         /* ══════════════════════════════════════════
-           COLORMAP FEATURE — new additions only
+           COLORMAP FEATURE
         ══════════════════════════════════════════ */
         function colormapColor(normValue) {
             const stops = [
@@ -1232,13 +1043,14 @@ Downloading this attachment is disabled. If you want to download it and you trus
            YOUR ADDITION — Urban Health for outside-grid
         ════════════════════════════════════════════ */
 
-        const API_URL = 'https://84c9-14-139-176-131.ngrok-free.app/predict';
+        // UPDATE THIS URL TO YOUR RENDER LINK
+        const API_URL = 'https://nbs-for-dss-prediction-model.onrender.com/';
 
         const SCORE_META = {
             1: { color:'#ef4444', label:'Poor',      desc:'Severely degraded urban environment' },
             2: { color:'#f97316', label:'Fair',      desc:'Below average health conditions'     },
             3: { color:'#eab308', label:'Moderate',  desc:'Average urban health conditions'     },
-            4: { color:'#22c55e', label:'Healthy',   desc:'Good urban environment quality'      },
+            4: { color:'#22c55e', label:'Healthy',   desc:'Good urban environment quality'       },
             5: { color:'#10b981', label:'Excellent', desc:'Outstanding urban health conditions' },
         };
 
@@ -1253,33 +1065,33 @@ Downloading this attachment is disabled. If you want to download it and you trus
         let urbanCharts = [], urbanMarker = null;
 
         function openUrbanInput(latlng) {
-    if (urbanMarker) map.removeLayer(urbanMarker);
+            if (urbanMarker) map.removeLayer(urbanMarker);
 
-    urbanMarker = L.circleMarker(latlng, {
-        radius: 9,
-        color: '#3b82f6',
-        fillColor: '#3b82f6',
-        fillOpacity: 0.35,
-        weight: 2
-    }).addTo(map);
+            urbanMarker = L.circleMarker(latlng, {
+                radius: 9,
+                color: '#3b82f6',
+                fillColor: '#3b82f6',
+                fillOpacity: 0.35,
+                weight: 2
+            }).addTo(map);
 
-    document.getElementById('uip-coord').textContent =
-        `${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`;
+            document.getElementById('uip-coord').textContent =
+                `${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`;
 
-    document.getElementById('urban-input-panel').classList.add('open');
+            document.getElementById('urban-input-panel').classList.add('open');
 
-    // hide controls
-    document.getElementById('colormap-control').classList.add('hidden');
-    document.getElementById('colormap-legend').classList.add('hidden');
+            // hide controls
+            document.getElementById('colormap-control').classList.add('hidden');
+            document.getElementById('colormap-legend').classList.add('hidden');
 
-    document.getElementById('uip-err').style.display = 'none';
-    document.getElementById('uip-loading').style.display = 'none';
-    document.getElementById('uip-btn').disabled = false;
+            document.getElementById('uip-err').style.display = 'none';
+            document.getElementById('uip-loading').style.display = 'none';
+            document.getElementById('uip-btn').disabled = false;
 
-    URBAN_PARAMS.forEach(p =>
-        document.getElementById(p.id).value = ''
-    );
-}
+            URBAN_PARAMS.forEach(p =>
+                document.getElementById(p.id).value = ''
+            );
+        }
 
         function closeUrbanInput() {
             document.getElementById('urban-input-panel').classList.remove('open');
@@ -1444,10 +1256,10 @@ Downloading this attachment is disabled. If you want to download it and you trus
             initTheme();
             loadData();
             window.addEventListener("load", () => {
-    makeDraggable(document.getElementById("grid-selector"));
-    makeDraggable(document.getElementById("top-bar"));
-    makeDraggable(document.getElementById("colormap-control"));
-});
+                makeDraggable(document.getElementById("grid-selector"));
+                makeDraggable(document.getElementById("top-bar"));
+                makeDraggable(document.getElementById("colormap-control"));
+            });
         });
     </script>
 </body>
