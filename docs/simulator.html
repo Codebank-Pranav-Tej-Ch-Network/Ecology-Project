@@ -114,6 +114,7 @@
                 <a href="#" class="block py-2 text-emerald-400 border-b-2 border-emerald-400 lg:border-none transition-colors">Simulation</a>
                 <a href="./index_final.html" class="block py-2 text-slate-400 hover:text-white transition-colors">View AP EcoGrid Analysis</a>
                 <a href="#" id="nav-model-interp" class="block py-2 text-slate-400 hover:text-white transition-colors cursor-pointer">Model Interpretation Analysis</a>
+                <a href="https://sathwik6174.github.io/EcoKnowledge-Game/" target="_blank" rel="noopener noreferrer" class="block py-2 text-slate-400 hover:text-emerald-400 transition-colors cursor-pointer">Play Eco-Game</a>
             </div>
         </nav>
 
@@ -179,10 +180,16 @@
                 </form>
             </div>
 
-            <div id="right-panel" class="hidden xl:flex flex-col xl:col-span-1 glass-card p-8 order-3 opacity-0">
+            <div id="right-panel" class="hidden xl:flex flex-col xl:col-span-1 glass-card p-8 order-3 opacity-0 relative">
+                <div class="drag-handle absolute top-4 right-4 text-slate-500 hover:text-white cursor-grab p-2 bg-white/5 rounded-md border border-white/10 transition-colors" title="Drag to undock panel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                </div>
+
                 <h3 class="text-sm font-black text-emerald-400 uppercase tracking-[0.2em] mb-6 text-center xl:text-left border-b border-emerald-500/20 pb-4">Ecological Balance</h3>
                 
-                <div id="dynamic-suggestions" class="flex-1 flex flex-col justify-center space-y-6 text-[15px] text-slate-300 leading-relaxed">
+                <div id="dynamic-suggestions" class="flex-1 flex flex-col justify-center space-y-6 text-[15px] text-slate-300 leading-relaxed pointer-events-none">
                     <div class="text-center space-y-4 opacity-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                         <p>Run a simulation to generate tailored urban planning suggestions based on the ecological health score.</p>
@@ -254,6 +261,50 @@
     </div>
 
     <script>
+        // DRAG AND DROP FUNCTIONALITY FOR RIGHT PANEL
+        function makeDraggable(el) {
+            let isDragging = false, offsetX, offsetY;
+            const dragHandle = el.querySelector('.drag-handle') || el;
+            
+            dragHandle.addEventListener("mousedown", (e) => {
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+                isDragging = true;
+                const rect = el.getBoundingClientRect();
+                
+                // If it hasn't been popped out yet, pop it out of the grid securely
+                if (el.style.position !== 'fixed') {
+                    el.style.width = rect.width + 'px';
+                    el.style.height = rect.height + 'px';
+                    el.style.position = 'fixed';
+                    el.style.zIndex = 1000;
+                    el.style.left = rect.left + "px";
+                    el.style.top = rect.top + "px";
+                }
+                
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                document.body.style.userSelect = "none";
+                dragHandle.style.cursor = "grabbing";
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (!isDragging) return;
+                el.style.left = (e.clientX - offsetX) + "px";
+                el.style.top = (e.clientY - offsetY) + "px";
+            });
+
+            document.addEventListener("mouseup", () => {
+                isDragging = false;
+                document.body.style.userSelect = "auto";
+                dragHandle.style.cursor = "grab";
+            });
+        }
+        
+        // Initialize the drag function
+        document.addEventListener("DOMContentLoaded", () => {
+            makeDraggable(document.getElementById("right-panel"));
+        });
+
         // Mobile Menu
         document.getElementById('menu-toggle').onclick = () => { document.getElementById('nav-menu').classList.toggle('hidden-mobile'); };
         
@@ -415,11 +466,11 @@
                     let suggestionsHTML = "";
                     if (finalScore < 2.5) {
                         suggestionsHTML = `
-                            <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl mb-4">
+                            <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl mb-4 pointer-events-auto">
                                 <p><strong class="text-red-500 text-xl md:text-2xl tracking-wide uppercase">Critical Risk</strong></p>
                             </div>
-                            <p class="text-base text-slate-300">This grid is experiencing severe environmental degradation. Immediate interventions are required.</p>
-                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300">
+                            <p class="text-base text-slate-300 pointer-events-auto">This grid is experiencing severe environmental degradation. Immediate interventions are required.</p>
+                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300 pointer-events-auto">
                                 <li><strong class="text-red-400">Emissions:</strong> Enforce strict PM 2.5 caps on local transport and industry.</li>
                                 <li><strong class="text-red-400">Heat Mitigation:</strong> Implement cool roofs and high-albedo pavements to combat the UHI effect.</li>
                                 <li><strong class="text-red-400">Greening:</strong> Mandate vertical gardens on high-density urban structures.</li>
@@ -427,11 +478,11 @@
                         `;
                     } else if (finalScore < 4.0) {
                         suggestionsHTML = `
-                            <div class="p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl mb-4">
+                            <div class="p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl mb-4 pointer-events-auto">
                                 <p><strong class="text-orange-500 text-xl md:text-2xl tracking-wide uppercase">Moderate Stress</strong></p>
                             </div>
-                            <p class="text-base text-slate-300">The ecological balance is fair, but infrastructural density is putting pressure on the environment.</p>
-                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300">
+                            <p class="text-base text-slate-300 pointer-events-auto">The ecological balance is fair, but infrastructural density is putting pressure on the environment.</p>
+                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300 pointer-events-auto">
                                 <li><strong class="text-orange-400">Zoning:</strong> Restrict further dense construction without adding proportional green spaces.</li>
                                 <li><strong class="text-orange-400">Air Quality:</strong> Introduce low-emission zones to stabilize PM 2.5 levels.</li>
                                 <li><strong class="text-orange-400">Surface Temp:</strong> Increase tree canopy coverage to improve LSTVI dynamics.</li>
@@ -439,11 +490,11 @@
                         `;
                     } else {
                         suggestionsHTML = `
-                            <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl mb-4">
+                            <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl mb-4 pointer-events-auto">
                                 <p><strong class="text-emerald-500 text-xl md:text-2xl tracking-wide uppercase">Healthy & Balanced</strong></p>
                             </div>
-                            <p class="text-base text-slate-300">This grid demonstrates excellent harmony between infrastructure and nature.</p>
-                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300">
+                            <p class="text-base text-slate-300 pointer-events-auto">This grid demonstrates excellent harmony between infrastructure and nature.</p>
+                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300 pointer-events-auto">
                                 <li><strong class="text-emerald-400">Preservation:</strong> Enforce current zoning laws to protect existing biomass and carbon sinks.</li>
                                 <li><strong class="text-emerald-400">Benchmark:</strong> Utilize this sector's Greenness-to-Density ratio as a blueprint for developing areas.</li>
                                 <li><strong class="text-emerald-400">Monitoring:</strong> Maintain continuous air quality sensors to prevent baseline regression.</li>
