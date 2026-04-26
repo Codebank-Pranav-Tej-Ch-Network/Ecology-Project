@@ -215,6 +215,22 @@
         </div>
     </div>
 
+    <a href="https://sathwik6174.github.io/EcoKnowledge-Game/" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[60] glass-card p-3 md:p-4 flex items-center gap-3 hover:bg-emerald-500 hover:scale-105 active:scale-95 transition-all group cursor-pointer shadow-2xl border border-emerald-500/30">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:bg-black/20 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-black text-emerald-400">
+                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                <path d="M6 12h4"></path>
+                <path d="M8 10v4"></path>
+                <circle cx="15" cy="13" r="1"></circle>
+                <circle cx="18" cy="11" r="1"></circle>
+            </svg>
+        </div>
+        <div class="hidden md:block pr-4">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 group-hover:text-black/70 transition-colors">Interactive</div>
+            <div class="font-black text-white group-hover:text-black transition-colors">Start the Game</div>
+        </div>
+    </a>
+
     <div id="centralPopUp" class="centered-popup">
         <span id="closePop" class="close-pop">&times;</span>
         <div class="p-8 md:p-10">
@@ -399,32 +415,38 @@
                     let suggestionsHTML = "";
                     if (finalScore < 2.5) {
                         suggestionsHTML = `
-                            <p><strong class="text-white text-red-400 text-lg">Status: Critical Risk</strong></p>
-                            <p class="text-sm">This grid is experiencing severe environmental degradation. Immediate interventions are required.</p>
-                            <ul class="list-disc pl-4 space-y-3 mt-4 text-sm">
-                                <li><strong class="text-white">Emissions:</strong> Enforce strict PM 2.5 caps on local transport and industry.</li>
-                                <li><strong class="text-white">Heat Mitigation:</strong> Implement cool roofs and high-albedo pavements to combat the UHI effect.</li>
-                                <li><strong class="text-white">Greening:</strong> Mandate vertical gardens on high-density urban structures.</li>
+                            <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl mb-4">
+                                <p><strong class="text-red-500 text-xl md:text-2xl tracking-wide uppercase">Critical Risk</strong></p>
+                            </div>
+                            <p class="text-base text-slate-300">This grid is experiencing severe environmental degradation. Immediate interventions are required.</p>
+                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300">
+                                <li><strong class="text-red-400">Emissions:</strong> Enforce strict PM 2.5 caps on local transport and industry.</li>
+                                <li><strong class="text-red-400">Heat Mitigation:</strong> Implement cool roofs and high-albedo pavements to combat the UHI effect.</li>
+                                <li><strong class="text-red-400">Greening:</strong> Mandate vertical gardens on high-density urban structures.</li>
                             </ul>
                         `;
                     } else if (finalScore < 4.0) {
                         suggestionsHTML = `
-                            <p><strong class="text-white text-orange-400 text-lg">Status: Moderate Stress</strong></p>
-                            <p class="text-sm">The ecological balance is fair, but infrastructural density is putting pressure on the environment.</p>
-                            <ul class="list-disc pl-4 space-y-3 mt-4 text-sm">
-                                <li><strong class="text-white">Zoning:</strong> Restrict further dense construction without adding proportional green spaces.</li>
-                                <li><strong class="text-white">Air Quality:</strong> Introduce low-emission zones to stabilize PM 2.5 levels.</li>
-                                <li><strong class="text-white">Surface Temp:</strong> Increase tree canopy coverage to improve LSTVI dynamics.</li>
+                            <div class="p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl mb-4">
+                                <p><strong class="text-orange-500 text-xl md:text-2xl tracking-wide uppercase">Moderate Stress</strong></p>
+                            </div>
+                            <p class="text-base text-slate-300">The ecological balance is fair, but infrastructural density is putting pressure on the environment.</p>
+                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300">
+                                <li><strong class="text-orange-400">Zoning:</strong> Restrict further dense construction without adding proportional green spaces.</li>
+                                <li><strong class="text-orange-400">Air Quality:</strong> Introduce low-emission zones to stabilize PM 2.5 levels.</li>
+                                <li><strong class="text-orange-400">Surface Temp:</strong> Increase tree canopy coverage to improve LSTVI dynamics.</li>
                             </ul>
                         `;
                     } else {
                         suggestionsHTML = `
-                            <p><strong class="text-white text-emerald-400 text-lg">Status: Healthy & Balanced</strong></p>
-                            <p class="text-sm">This grid demonstrates excellent harmony between infrastructure and nature.</p>
-                            <ul class="list-disc pl-4 space-y-3 mt-4 text-sm">
-                                <li><strong class="text-white">Preservation:</strong> Enforce current zoning laws to protect existing biomass and carbon sinks.</li>
-                                <li><strong class="text-white">Benchmark:</strong> Utilize this sector's Greenness-to-Density ratio as a blueprint for developing areas.</li>
-                                <li><strong class="text-white">Monitoring:</strong> Maintain continuous air quality sensors to prevent baseline regression.</li>
+                            <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl mb-4">
+                                <p><strong class="text-emerald-500 text-xl md:text-2xl tracking-wide uppercase">Healthy & Balanced</strong></p>
+                            </div>
+                            <p class="text-base text-slate-300">This grid demonstrates excellent harmony between infrastructure and nature.</p>
+                            <ul class="list-disc pl-5 space-y-4 mt-5 text-base text-slate-300">
+                                <li><strong class="text-emerald-400">Preservation:</strong> Enforce current zoning laws to protect existing biomass and carbon sinks.</li>
+                                <li><strong class="text-emerald-400">Benchmark:</strong> Utilize this sector's Greenness-to-Density ratio as a blueprint for developing areas.</li>
+                                <li><strong class="text-emerald-400">Monitoring:</strong> Maintain continuous air quality sensors to prevent baseline regression.</li>
                             </ul>
                         `;
                     }
