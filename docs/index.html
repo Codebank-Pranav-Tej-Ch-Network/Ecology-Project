@@ -130,7 +130,7 @@
                 <a href="#overview" class="block text-slate-400 hover:text-white transition-colors">Our Mission</a>
                 <a href="simulator.html" class="block text-slate-400 hover:text-emerald-400 transition-colors">Simulation</a>
                 <a href="index_final.html" class="block text-slate-400 hover:text-blue-400 transition-colors">View AP EcoGrid Analysis</a>
-                <a href="https://sathwik6174.github.io/EcoKnowledge-Game/" target="_blank" rel="noopener noreferrer" class="block text-slate-400 hover:text-emerald-400 transition-colors">Play Eco-Game</a>
+                <a href="https://sathwik6174.github.io/EcoKnowledge-Game/" target="_blank" rel="noopener noreferrer" class="block text-slate-400 hover:text-emerald-400 transition-colors">Play the Game</a>
             </div>
         </div>
     </nav>
@@ -304,7 +304,11 @@
         </div>
     </footer>
 
-    <a href="https://sathwik6174.github.io/EcoKnowledge-Game/" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[60] glass-card p-3 md:p-4 flex items-center gap-3 hover:bg-emerald-500 hover:scale-105 active:scale-95 transition-all group cursor-pointer shadow-2xl border border-emerald-500/30">
+    <a href="https://sathwik6174.github.io/EcoKnowledge-Game/" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[60] glass-card p-3 md:p-4 flex items-center gap-3 hover:bg-emerald-500 hover:scale-105 active:scale-95 transition-all group cursor-pointer shadow-2xl border border-emerald-500/30">
+        <div class="hidden md:block pl-2 text-right">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 group-hover:text-black/70 transition-colors">Interactive</div>
+            <div class="font-black text-white group-hover:text-black transition-colors">Play the Game</div>
+        </div>
         <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:bg-black/20 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-black text-emerald-400">
                 <rect x="2" y="6" width="20" height="12" rx="2"></rect>
@@ -313,10 +317,6 @@
                 <circle cx="15" cy="13" r="1"></circle>
                 <circle cx="18" cy="11" r="1"></circle>
             </svg>
-        </div>
-        <div class="hidden md:block pr-4">
-            <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 group-hover:text-black/70 transition-colors">Interactive</div>
-            <div class="font-black text-white group-hover:text-black transition-colors">Play the Game</div>
         </div>
     </a>
 
@@ -403,6 +403,7 @@
     </div>
 
     <script>
+        // Mobile Menu Toggle
         document.getElementById('menu-toggle').onclick = () => {
             const menu = document.getElementById('nav-menu');
             if(menu.classList.contains('hidden')) {
@@ -414,11 +415,14 @@
             }
         };
 
+        // Initialize GSAP Plugins
         gsap.registerPlugin(ScrollTrigger);
 
+        // Hero Entrance Animation
         const tl = gsap.timeline();
         tl.fromTo(".gs-reveal-hero", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out" });
 
+        // Scroll Animations for sections
         gsap.utils.toArray('.gs-scroll-card').forEach((elem) => {
             gsap.fromTo(elem, 
                 { y: 50, opacity: 0 },
@@ -436,20 +440,22 @@
             );
         });
 
+        // Documentation Modal Logic
         const docsModal = document.getElementById('docs-modal');
         function openDocs(e) {
             e.preventDefault();
             docsModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; 
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
             gsap.to(docsModal, { opacity: 1, duration: 0.4, ease: "power2.out" });
         }
         function closeDocs() {
             gsap.to(docsModal, { opacity: 0, duration: 0.3, ease: "power2.in", onComplete: () => {
                 docsModal.classList.add('hidden');
-                document.body.style.overflow = 'auto'; 
+                document.body.style.overflow = 'auto'; // Restore background scrolling
             }});
         }
 
+        // Carousel Logic
         let currentSlide = 0;
         const slides = document.querySelectorAll('.carousel-slide');
         let slideInterval;
@@ -470,6 +476,7 @@
         }
         resetInterval();
 
+        // Quotes Logic
         const quotes = [
             { text: "The greatest threat to our planet is the belief that someone else will save it.", author: "Robert Swan" },
             { text: "A nation that destroys its soils destroys itself. Forests are the lungs of our land.", author: "Franklin D. Roosevelt" },
